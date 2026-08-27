@@ -11,6 +11,7 @@ import { DocumentUploader } from "@/components/documents/DocumentUploader";
 import { DocumentList } from "@/components/documents/DocumentList";
 import { immobilieStatusLabel, immobilieStatusTone, gebaeudeTypLabel, dokumentKategorien } from "@/lib/labels";
 import { Plus, FolderKanban, FileText, MapPin } from "lucide-react";
+import { EditPropertyForm } from "./EditPropertyForm";
 
 export default async function ImmobilieDetailPage(props: PageProps<"/immobilien/[id]">) {
   const { id } = await props.params;
@@ -49,11 +50,14 @@ export default async function ImmobilieDetailPage(props: PageProps<"/immobilien/
         }
       />
 
-      <p className="-mt-6 mb-8 flex items-center gap-1.5 text-sm text-ink-soft">
-        <MapPin className="h-4 w-4" />
-        {property.adresse}
-        {property.typ && <span>· {gebaeudeTypLabel[property.typ]}</span>}
-      </p>
+      <div className="-mt-6 mb-8 flex flex-wrap items-center gap-3">
+        <p className="flex items-center gap-1.5 text-sm text-ink-soft">
+          <MapPin className="h-4 w-4" />
+          {property.adresse}
+          {property.typ && <span>· {gebaeudeTypLabel[property.typ]}</span>}
+        </p>
+        <EditPropertyForm property={property} />
+      </div>
 
       <div className="mb-10 grid grid-cols-1 gap-5 sm:grid-cols-3">
         <div className="rounded-2xl border border-card-border bg-white p-5">

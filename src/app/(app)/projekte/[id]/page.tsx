@@ -10,6 +10,7 @@ import { UnterlagenTab } from "./tabs/UnterlagenTab";
 import { BudgetTab } from "./tabs/BudgetTab";
 import { AngeboteTab } from "./tabs/AngeboteTab";
 import { FreigabenTab } from "./tabs/FreigabenTab";
+import { EditProjectForm } from "./EditProjectForm";
 
 export default async function ProjektWorkspacePage(props: PageProps<"/projekte/[id]">) {
   const { id } = await props.params;
@@ -40,7 +41,12 @@ export default async function ProjektWorkspacePage(props: PageProps<"/projekte/[
         eyebrow={property?.name ?? "Projekt"}
         title={project.name}
         description={project.beschreibung ?? undefined}
-        action={<Badge tone={projektStatusTone[project.status]}>{projektStatusLabel[project.status]}</Badge>}
+        action={
+          <div className="flex items-center gap-3">
+            <Badge tone={projektStatusTone[project.status]}>{projektStatusLabel[project.status]}</Badge>
+            <EditProjectForm project={project} />
+          </div>
+        }
       />
 
       <BudgetCard summary={summary} />

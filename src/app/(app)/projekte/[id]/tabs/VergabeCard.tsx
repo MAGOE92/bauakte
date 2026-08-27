@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Check, X as XIcon, Plus } from "lucide-react";
+import { Check, X as XIcon, Plus, Ban } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -12,6 +12,7 @@ import { vergabeStatusLabel, vergabeStatusTone, angebotStatusLabel, angebotStatu
 import type { Tables } from "@/lib/supabase/database.types";
 import { createAngebot, acceptAngebot, rejectAngebot } from "../actions/angebote";
 import { createFirma } from "../actions/firmen";
+import { verwerfeVergabe } from "../actions/vergaben";
 
 type Firma = Tables<"firmen">;
 
@@ -35,7 +36,10 @@ export function VergabeCard({
           <p className="font-display text-lg font-bold text-ink">{vergabe.titel}</p>
           <p className="mt-1 text-sm text-ink-soft">{vergabe.gewerk}</p>
         </div>
-        <Badge tone={vergabeStatusTone[vergabe.status]}>{vergabeStatusLabel[vergabe.status]}</Badge>
+        <div className="flex items-center gap-2">
+          <Badge tone={vergabeStatusTone[vergabe.status]}>{vergabeStatusLabel[vergabe.status]}</Badge>
+          {vergabe.status === "offen" && <VerwerfenButton vergabeId={vergabe.id} projectId={projectId} />}
+        </div>
       </div>
 
       {vergabe.beschreibung && <p className="mt-3 text-sm text-ink-soft">{vergabe.beschreibung}</p>}
@@ -57,6 +61,30 @@ export function VergabeCard({
         <NewAngebotForm projectId={projectId} vergabeId={vergabe.id} firmen={firmen} />
       </div>
     </Card>
+  );
+}
+
+function VerwerfenButton({ vergabeId, projectId }: { vergabeId: string; projectId: string }) {
+  const router = useRouter();
+  const [pending, setPending] = useState(false);
+
+  async function handleClick() {
+    if (!confirm("Diese Ausschreibung wirklich verwerfen?")) return;
+    setPending(true);
+    await verwerfeVergabe(vergabeId, projectId);
+    setPending(false);
+    router.refresh();
+  }
+
+  return (
+    <button
+      onClick={handleClick}
+      disabled={pending}
+      title="Ausschreibung verwerfen"
+      className="flex h-7 w-7 items-center justify-center rounded-full text-ink-soft transition-colors hover:bg-danger-soft hover:text-danger disabled:opacity-50"
+    >
+      <Ban className="h-3.5 w-3.5" />
+    </button>
   );
 }
 
@@ -132,6 +160,9 @@ function NewAngebotForm({
   const [firmaId, setFirmaId] = useState("");
   const [neueFirmaName, setNeueFirmaName] = useState("");
   const [neueFirmaGewerk, setNeueFirmaGewerk] = useState("");
+  const [neueFirmaAnsprechpartner, setNeueFirmaAnsprechpartner] = useState("");
+  const [neueFirmaEmail, setNeueFirmaEmail] = useState("");
+  const [neueFirmaTelefon, setNeueFirmaTelefon] = useState("");
   const [betrag, setBetrag] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -141,6 +172,9 @@ function NewAngebotForm({
     setCreatingFirma(false);
     setNeueFirmaName("");
     setNeueFirmaGewerk("");
+    setNeueFirmaAnsprechpartner("");
+    setNeueFirmaEmail("");
+    setNeueFirmaTelefon("");
     setBetrag("");
     setError(null);
   }
@@ -156,9 +190,9 @@ function NewAngebotForm({
       const firmaResult = await createFirma({
         name: neueFirmaName,
         gewerk: neueFirmaGewerk,
-        ansprechpartner: "",
-        email: "",
-        telefon: "",
+        ansprechpartner: neueFirmaAnsprechpartner,
+        email: neueFirmaEmail,
+        telefon: neueFirmaTelefon,
       });
       if (firmaResult.status === "error") {
         setPending(false);
@@ -229,6 +263,29 @@ function NewAngebotForm({
               id={`neue-firma-gewerk-${vergabeId}`}
               value={neueFirmaGewerk}
               onChange={(e) => setNeueFirmaGewerk(e.target.value)}
+            />
+          </Field>
+          <Field label="Ansprechpartner" htmlFor={`neue-firma-ap-${vergabeId}`} hint="Optional">
+            <Input
+              id={`neue-firma-ap-${vergabeId}`}
+              value={neueFirmaAnsprechpartner}
+              onChange={(e) => setNeueFirmaAnsprechpartner(e.target.value)}
+            />
+          </Field>
+          <Field label="Telefon" htmlFor={`neue-firma-tel-${vergabeId}`} hint="Optional">
+            <Input
+              id={`neue-firma-tel-${vergabeId}`}
+              type="tel"
+              value={neueFirmaTelefon}
+              onChange={(e) => setNeueFirmaTelefon(e.target.value)}
+            />
+          </Field>
+          <Field label="E-Mail" htmlFor={`neue-firma-email-${vergabeId}`} hint="Optional" className="sm:col-span-2">
+            <Input
+              id={`neue-firma-email-${vergabeId}`}
+              type="email"
+              value={neueFirmaEmail}
+              onChange={(e) => setNeueFirmaEmail(e.target.value)}
             />
           </Field>
           <button
