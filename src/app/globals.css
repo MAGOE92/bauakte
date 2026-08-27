@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+:root {
+  --color-cream: #f5f1ea;
+  --color-cream-soft: #efe9de;
+  --color-navy: #1c2530;
+  --color-navy-soft: #26313f;
+  --color-terracotta: #d9633f;
+  --color-terracotta-hover: #c25532;
+  --color-terracotta-soft: #fbe6dd;
+  --color-card-border: #e5ddc9;
+  --color-ink: #2a251f;
+  --color-ink-soft: #6f6759;
+
+  --color-success: #2f7d5b;
+  --color-success-soft: #e1f0e7;
+  --color-warning: #a9700c;
+  --color-warning-soft: #faedd4;
+  --color-danger: #c0392b;
+  --color-danger-soft: #fbe3e0;
+  --color-info: #3b6ea5;
+  --color-info-soft: #e2ebf4;
+  --color-neutral-soft: #eae4d8;
+}
+
+@theme inline {
+  --color-cream: var(--color-cream);
+  --color-cream-soft: var(--color-cream-soft);
+  --color-navy: var(--color-navy);
+  --color-navy-soft: var(--color-navy-soft);
+  --color-terracotta: var(--color-terracotta);
+  --color-terracotta-hover: var(--color-terracotta-hover);
+  --color-terracotta-soft: var(--color-terracotta-soft);
+  --color-card-border: var(--color-card-border);
+  --color-ink: var(--color-ink);
+  --color-ink-soft: var(--color-ink-soft);
+  --color-success: var(--color-success);
+  --color-success-soft: var(--color-success-soft);
+  --color-warning: var(--color-warning);
+  --color-warning-soft: var(--color-warning-soft);
+  --color-danger: var(--color-danger);
+  --color-danger-soft: var(--color-danger-soft);
+  --color-info: var(--color-info);
+  --color-info-soft: var(--color-info-soft);
+  --color-neutral-soft: var(--color-neutral-soft);
+
+  --font-display: var(--font-plus-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+::selection {
+  background: var(--color-terracotta-soft);
+  color: var(--color-ink);
+}
