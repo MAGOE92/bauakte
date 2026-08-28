@@ -34,6 +34,26 @@ Das Supabase-Projekt ("Gebaeudeakte") enthält bereits:
 - Edge Function `freigabe-datei`, die für einen gültigen Freigabe-Token
   signierte Download-Links für die freigegebenen Dokumente ausstellt
 
+### Offene Schritte am Supabase-Projekt
+
+1. Migration `supabase/migrations/20260828000000_freigabe_by_token_haerten.sql`
+   einspielen (härtet `freigabe_by_token`, siehe Kommentar in der Datei).
+2. Im Dashboard unter Authentication → Policies **Leaked Password Protection**
+   aktivieren (Abgleich gegen HaveIBeenPwned); der Security Advisor meldet das
+   sonst als Warnung.
+
+### Zur Freigabe-Funktion und dem Security Advisor
+
+`public.freigabe_by_token` ist bewusst für die Rolle `anon` ausführbar — genau
+das ist das Feature: Ein nicht eingeloggter Empfänger öffnet den Link. Das
+Sicherheitsmerkmal ist der Token selbst (zwei zusammengesetzte UUIDs = 256 Bit,
+nicht erratbar); die Funktion prüft Ablauf und Widerruf und gibt ohne gültigen
+Token nichts preis. Der Security Advisor markiert solche Funktionen generell —
+diese Warnung ist hier also erwartet und kein Fehler. Eingeloggte Nutzer
+brauchen die Funktion dagegen nicht: sie lesen die Freigabe über ihre eigenen
+RLS-Rechte (`loadFreigabe.ts`), weshalb `authenticated` das EXECUTE-Recht
+entzogen bekommt.
+
 ## Struktur
 
 - `src/app/(app)/*` – eingeloggter Bereich (Sidebar-Layout)

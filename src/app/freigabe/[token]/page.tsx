@@ -1,4 +1,3 @@
-import { createClient } from "@/lib/supabase/server";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Card } from "@/components/ui/Card";
 import { BudgetCard } from "@/components/projects/BudgetCard";
@@ -7,33 +6,7 @@ import { berechneBudget } from "@/lib/budget";
 import { formatBytes, formatDate } from "@/lib/format";
 import { projektStatusLabel, projektStatusTone } from "@/lib/labels";
 import { Badge } from "@/components/ui/Badge";
-import type { Enums } from "@/lib/supabase/database.types";
-
-type FreigabeData = {
-  valid: true;
-  freigabe: { empfaenger_name: string; laeuft_ab_am: string };
-  property: { name: string; adresse: string };
-  project: {
-    id: string;
-    name: string;
-    beschreibung: string | null;
-    status: Enums<"projekt_status">;
-    zeitraum_von: string | null;
-    zeitraum_bis: string | null;
-    budget_gesamt: number;
-  };
-  ausgaben: { betrag: number; bezahlt: boolean }[];
-  einnahmen: { betrag: number }[];
-  documents: {
-    id: string;
-    name: string;
-    kategorie: string;
-    hochgeladen_am: string;
-    datei_groesse_bytes: number | null;
-  }[];
-};
-
-type FreigabeInvalid = { valid: false; reason: "not_found" | "revoked" | "expired" };
+import { loadFreigabe } from "./loadFreigabe";
 
 function BrandHeader() {
   return (
@@ -48,13 +21,10 @@ function BrandHeader() {
 
 export default async function FreigabePage(props: PageProps<"/freigabe/[token]">) {
   const { token } = await props.params;
-  const supabase = await createClient();
-  const { data, error } = await supabase.rpc("freigabe_by_token", { p_token: token });
+  const result = await loadFreigabe(token);
 
-  const result = (data ?? { valid: false, reason: "not_found" }) as FreigabeData | FreigabeInvalid;
-
-  if (error || !result.valid) {
-    const reason = !error && "reason" in result ? result.reason : "not_found";
+  if (!result.valid) {
+    const reason = result.reason;
     const messages: Record<string, string> = {
       not_found: "Dieser Freigabe-Link ist ungültig.",
       revoked: "Diese Freigabe wurde widerrufen.",
