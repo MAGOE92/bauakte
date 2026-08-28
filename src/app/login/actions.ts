@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { istRegistrierungOffen } from "@/lib/config";
 
 export type AuthResult =
   | { status: "ok" }
@@ -43,6 +44,15 @@ export async function signIn(email: string, password: string): Promise<AuthResul
 }
 
 export async function signUp(email: string, password: string): Promise<AuthResult> {
+  // Serverseitige Sperre: Das Ausblenden des Formulars allein würde nicht
+  // reichen, diese Funktion ist auch direkt aufrufbar.
+  if (!istRegistrierungOffen()) {
+    return {
+      status: "error",
+      message: "Für diese Bauakte ist die Registrierung geschlossen.",
+    };
+  }
+
   const trimmedEmail = email.trim().toLowerCase();
   if (!trimmedEmail || !password) {
     return { status: "error", message: "Bitte E-Mail-Adresse und Passwort angeben." };

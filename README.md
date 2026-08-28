@@ -20,6 +20,42 @@ npm run dev
 
 Öffne [http://localhost:3000](http://localhost:3000).
 
+## Zugang: privat jetzt, öffentlich später
+
+Die App läuft in zwei Betriebsarten, umgeschaltet über die Umgebungsvariable
+`REGISTRIERUNG_OFFEN`. Standard ist **privat**.
+
+### Privat (Standard, `REGISTRIERUNG_OFFEN` nicht gesetzt)
+
+Die Anmeldeseite zeigt nur „Anmelden", es gibt keine Registrierung, und
+`signUp` weist Aufrufe serverseitig ab. Es kommt nur hinein, wer schon ein
+Konto hat. In dieser Betriebsart wird **nie eine E-Mail verschickt** — es
+braucht also keinen Mailversand.
+
+Konten legt der Betreiber im Supabase-Dashboard an:
+Authentication → Users → **Add user** → **Create new user** → E-Mail und
+Passwort eintragen, Haken bei **Auto Confirm User** setzen. Danach meldet sich
+der Nutzer in der App mit genau diesen Daten an.
+
+### Öffentlich (`REGISTRIERUNG_OFFEN=true`)
+
+Die Registrierung erscheint wieder in der App und jeder kann sich ein Konto
+anlegen. Reihenfolge beim Umstellen:
+
+1. **E-Mail-Versand in Supabase einrichten.** Der eingebaute Versand ist nur
+   zum Ausprobieren gedacht und stark limitiert; für echte Nutzer einen
+   SMTP-Anbieter hinterlegen (z. B. Resend, Postmark, SendGrid) unter
+   Project Settings → Authentication → SMTP Settings. Ohne diesen Schritt
+   kommen die Bestätigungslinks nicht an und niemand kann sich anmelden.
+2. **Redirect-URL eintragen** unter Authentication → URL Configuration: die
+   Domain der App, sonst führt der Link aus der Bestätigungsmail ins Leere.
+3. **`REGISTRIERUNG_OFFEN=true`** setzen (in Vercel unter Settings →
+   Environment Variables) und neu deployen.
+
+Noch zu bauen, bevor die App wirklich für alle offen ist: eine
+„Passwort vergessen"-Funktion. Solange nur der Betreiber Konten anlegt, setzt
+er ein Passwort im Dashboard zurück; für Selbstbedienung fehlt der Ablauf noch.
+
 ## Supabase-Projekt
 
 Das Supabase-Projekt ("Gebaeudeakte") enthält bereits:
@@ -57,7 +93,8 @@ entzogen bekommt.
 ## Struktur
 
 - `src/app/(app)/*` – eingeloggter Bereich (Sidebar-Layout)
-- `src/app/login` – Anmelden/Registrieren
+- `src/app/login` – Anmelden (Registrierung je nach `REGISTRIERUNG_OFFEN`)
+- `src/lib/config.ts` – der Schalter privat/öffentlich
 - `src/app/freigabe/[token]` – öffentliche, nicht eingeloggte Freigabe-Ansicht
 - `src/lib/supabase` – Browser-/Server-Clients, Proxy-Session-Handling, DB-Typen
 - `src/lib/budget.ts` – reine Budgetberechnung (Verplant/Bezahlt/Verfügbar/Einnahmen)

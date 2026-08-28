@@ -1,3 +1,4 @@
+import { istRegistrierungOffen } from "@/lib/config";
 import { LoginForm } from "./LoginForm";
 
 export default async function LoginPage(props: PageProps<"/login">) {
@@ -7,7 +8,7 @@ export default async function LoginPage(props: PageProps<"/login">) {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-cream px-6">
-      <LoginForm next={next} />
+      <LoginForm next={next} registrierungOffen={istRegistrierungOffen()} />
     </main>
   );
 }

@@ -8,7 +8,13 @@ import { signIn, signUp } from "./actions";
 
 type Mode = "login" | "register";
 
-export function LoginForm({ next }: { next: string }) {
+export function LoginForm({
+  next,
+  registrierungOffen,
+}: {
+  next: string;
+  registrierungOffen: boolean;
+}) {
   const router = useRouter();
   const [mode, setMode] = useState<Mode>("login");
   const [email, setEmail] = useState("");
@@ -17,13 +23,23 @@ export function LoginForm({ next }: { next: string }) {
   const [info, setInfo] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
+  // Ist die Registrierung geschlossen, gibt es nur die Anmeldung.
+  const aktiverModus: Mode = registrierungOffen ? mode : "login";
+
+  function wechsleModus(neu: Mode) {
+    setMode(neu);
+    setError(null);
+    setInfo(null);
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
     setInfo(null);
     setPending(true);
 
-    const result = mode === "login" ? await signIn(email, password) : await signUp(email, password);
+    const result =
+      aktiverModus === "login" ? await signIn(email, password) : await signUp(email, password);
 
     setPending(false);
 
@@ -48,34 +64,32 @@ export function LoginForm({ next }: { next: string }) {
         <span className="font-display text-2xl font-extrabold text-ink">Bauakte</span>
       </div>
 
-      <div className="mb-6 flex rounded-full border border-card-border bg-white p-1">
-        <button
-          type="button"
-          onClick={() => {
-            setMode("login");
-            setError(null);
-            setInfo(null);
-          }}
-          className={`flex-1 rounded-full py-2 text-sm font-bold transition-colors ${
-            mode === "login" ? "bg-terracotta text-white" : "text-ink-soft"
-          }`}
-        >
-          Anmelden
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setMode("register");
-            setError(null);
-            setInfo(null);
-          }}
-          className={`flex-1 rounded-full py-2 text-sm font-bold transition-colors ${
-            mode === "register" ? "bg-terracotta text-white" : "text-ink-soft"
-          }`}
-        >
-          Registrieren
-        </button>
-      </div>
+      {registrierungOffen ? (
+        <div className="mb-6 flex rounded-full border border-card-border bg-white p-1">
+          <button
+            type="button"
+            onClick={() => wechsleModus("login")}
+            className={`flex-1 rounded-full py-2 text-sm font-bold transition-colors ${
+              aktiverModus === "login" ? "bg-terracotta text-white" : "text-ink-soft"
+            }`}
+          >
+            Anmelden
+          </button>
+          <button
+            type="button"
+            onClick={() => wechsleModus("register")}
+            className={`flex-1 rounded-full py-2 text-sm font-bold transition-colors ${
+              aktiverModus === "register" ? "bg-terracotta text-white" : "text-ink-soft"
+            }`}
+          >
+            Registrieren
+          </button>
+        </div>
+      ) : (
+        <p className="mb-6 text-sm text-ink-soft">
+          Melde dich mit deiner E-Mail-Adresse und deinem Passwort an.
+        </p>
+      )}
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <Field label="E-Mail-Adresse" htmlFor="email">
@@ -92,7 +106,7 @@ export function LoginForm({ next }: { next: string }) {
           <Input
             id="password"
             type="password"
-            autoComplete={mode === "login" ? "current-password" : "new-password"}
+            autoComplete={aktiverModus === "login" ? "current-password" : "new-password"}
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -103,7 +117,11 @@ export function LoginForm({ next }: { next: string }) {
         {info && <p className="text-sm font-medium text-success">{info}</p>}
 
         <Button type="submit" disabled={pending} className="mt-2 w-full">
-          {pending ? "Einen Moment…" : mode === "login" ? "Anmelden" : "Konto erstellen"}
+          {pending
+            ? "Einen Moment…"
+            : aktiverModus === "login"
+              ? "Anmelden"
+              : "Konto erstellen"}
         </Button>
       </form>
     </div>
