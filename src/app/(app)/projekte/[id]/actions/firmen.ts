@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import type { ActionResult } from "@/lib/actions/types";
 
@@ -37,4 +38,36 @@ export async function createFirma(input: {
   }
 
   return { status: "ok", id: data.id };
+}
+
+export async function updateFirma(input: {
+  firmaId: string;
+  projectId: string;
+  name: string;
+  gewerk: string;
+  ansprechpartner: string;
+  email: string;
+  telefon: string;
+}): Promise<ActionResult> {
+  const name = input.name.trim();
+  if (!name) return { status: "error", message: "Bitte einen Firmennamen angeben." };
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("firmen")
+    .update({
+      name,
+      gewerk: input.gewerk.trim() || null,
+      ansprechpartner: input.ansprechpartner.trim() || null,
+      email: input.email.trim() || null,
+      telefon: input.telefon.trim() || null,
+    })
+    .eq("id", input.firmaId);
+
+  if (error) {
+    return { status: "error", message: "Die Firma konnte nicht gespeichert werden." };
+  }
+
+  revalidatePath(`/projekte/${input.projectId}`);
+  return { status: "ok", id: input.firmaId };
 }

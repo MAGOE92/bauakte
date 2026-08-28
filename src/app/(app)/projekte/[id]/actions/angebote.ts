@@ -109,3 +109,15 @@ export async function rejectAngebot(
   revalidatePath(`/projekte/${projectId}`);
   return { status: "ok" };
 }
+
+export async function deleteAngebot(
+  angebotId: string,
+  projectId: string
+): Promise<{ status: "ok" } | { status: "error"; message: string }> {
+  const supabase = await createClient();
+  const { error } = await supabase.from("angebote").delete().eq("id", angebotId);
+  if (error) return { status: "error", message: "Konnte nicht gelöscht werden." };
+
+  revalidatePath(`/projekte/${projectId}`);
+  return { status: "ok" };
+}

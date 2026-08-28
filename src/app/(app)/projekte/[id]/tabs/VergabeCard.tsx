@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Check, X as XIcon, Plus, Ban } from "lucide-react";
+import { Check, X as XIcon, Plus, Ban, Trash2 } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -10,7 +10,7 @@ import { Field, Input, Select } from "@/components/ui/Field";
 import { formatCurrency, formatDate } from "@/lib/format";
 import { vergabeStatusLabel, vergabeStatusTone, angebotStatusLabel, angebotStatusTone } from "@/lib/labels";
 import type { Tables } from "@/lib/supabase/database.types";
-import { createAngebot, acceptAngebot, rejectAngebot } from "../actions/angebote";
+import { createAngebot, acceptAngebot, rejectAngebot, deleteAngebot } from "../actions/angebote";
 import { createFirma } from "../actions/firmen";
 import { verwerfeVergabe } from "../actions/vergaben";
 
@@ -114,6 +114,14 @@ function AngebotRow({
     router.refresh();
   }
 
+  async function handleDelete() {
+    if (!confirm(`Angebot von "${firma?.name ?? "dieser Firma"}" wirklich löschen?`)) return;
+    setPending(true);
+    await deleteAngebot(angebot.id, projectId);
+    setPending(false);
+    router.refresh();
+  }
+
   return (
     <div className="flex flex-wrap items-center gap-3 rounded-xl bg-cream-soft px-4 py-3">
       <div className="min-w-0 flex-1">
@@ -121,26 +129,36 @@ function AngebotRow({
         <p className="text-xs text-ink-soft">{formatCurrency(angebot.betrag)}</p>
       </div>
       <Badge tone={angebotStatusTone[angebot.status]}>{angebotStatusLabel[angebot.status]}</Badge>
-      {angebot.status === "eingegangen" && (
-        <div className="flex gap-2">
-          <button
-            onClick={handleAccept}
-            disabled={pending}
-            title="Annehmen"
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-success-soft text-success transition-opacity hover:opacity-80 disabled:opacity-50"
-          >
-            <Check className="h-4 w-4" />
-          </button>
-          <button
-            onClick={handleReject}
-            disabled={pending}
-            title="Ablehnen"
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-danger-soft text-danger transition-opacity hover:opacity-80 disabled:opacity-50"
-          >
-            <XIcon className="h-4 w-4" />
-          </button>
-        </div>
-      )}
+      <div className="flex gap-2">
+        {angebot.status === "eingegangen" && (
+          <>
+            <button
+              onClick={handleAccept}
+              disabled={pending}
+              title="Annehmen"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-success-soft text-success transition-opacity hover:opacity-80 disabled:opacity-50"
+            >
+              <Check className="h-4 w-4" />
+            </button>
+            <button
+              onClick={handleReject}
+              disabled={pending}
+              title="Ablehnen"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-danger-soft text-danger transition-opacity hover:opacity-80 disabled:opacity-50"
+            >
+              <XIcon className="h-4 w-4" />
+            </button>
+          </>
+        )}
+        <button
+          onClick={handleDelete}
+          disabled={pending}
+          title="Angebot löschen"
+          className="flex h-8 w-8 items-center justify-center rounded-full text-ink-soft transition-colors hover:bg-danger-soft hover:text-danger disabled:opacity-50"
+        >
+          <Trash2 className="h-4 w-4" />
+        </button>
+      </div>
     </div>
   );
 }
