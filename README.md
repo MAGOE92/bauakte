@@ -58,7 +58,20 @@ er ein Passwort im Dashboard zurück; für Selbstbedienung fehlt der Ablauf noch
 
 ## Supabase-Projekt
 
-Das Supabase-Projekt ("Gebaeudeakte") enthält bereits:
+Die App läuft auf dem Supabase-Projekt **"Bau App"** (`kdqkowfnqdickisrfwsg`).
+
+> Zur Vorgeschichte: Ursprünglich lag das Schema im Projekt "Gebaeudeakte".
+> Auf das hatte am Ende niemand mehr administrativen Zugriff — dort liessen
+> sich also weder Nutzer anlegen noch Fehler beheben. Deshalb wurde die
+> Bauakte in "Bau App" neu aufgebaut (Migrationen `bauakte_01` bis `04`).
+>
+> In diesem Projekt lag bereits eine ältere "Bauhelfer"-Idee mit Katalogdaten
+> (Gewerke, Arbeitsschritte). Die ist unangetastet geblieben: Ihre leere
+> Tabelle `projects` wurde nur zu `bauhelfer_projects` umbenannt, weil der
+> Name kollidierte, und `private.ist_projektmitglied` entsprechend
+> nachgezogen. Die Bauakte nutzt eigene Helfer mit `bauakte_`-Präfix.
+
+Das Projekt enthält:
 
 - Schema für `properties`, `projects`, `firmen`, `documents`, `vergaben`,
   `vergabe_dokumente`, `angebote`, `projekt_firmen`, `ausgaben`, `einnahmen`,
@@ -70,13 +83,14 @@ Das Supabase-Projekt ("Gebaeudeakte") enthält bereits:
 - Edge Function `freigabe-datei`, die für einen gültigen Freigabe-Token
   signierte Download-Links für die freigegebenen Dokumente ausstellt
 
-### Offene Schritte am Supabase-Projekt
+### Offener Schritt am Supabase-Projekt
 
-1. Migration `supabase/migrations/20260828000000_freigabe_by_token_haerten.sql`
-   einspielen (härtet `freigabe_by_token`, siehe Kommentar in der Datei).
-2. Im Dashboard unter Authentication → Policies **Leaked Password Protection**
-   aktivieren (Abgleich gegen HaveIBeenPwned); der Security Advisor meldet das
-   sonst als Warnung.
+Im Dashboard unter Authentication → Policies **Leaked Password Protection**
+aktivieren (Abgleich gegen HaveIBeenPwned); der Security Advisor meldet das
+sonst als Warnung.
+
+Die Härtung von `freigabe_by_token` (EXECUTE nur für `anon`) ist in "Bau App"
+bereits Teil von Migration `bauakte_04` und muss nicht mehr nachgezogen werden.
 
 ### Zur Freigabe-Funktion und dem Security Advisor
 
