@@ -1,6 +1,9 @@
+import Link from "next/link";
+import { Plus } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { LinkButton } from "@/components/ui/Button";
 import { ProjectCard } from "@/components/projects/ProjectCard";
 
 export default async function ProjektePage() {
@@ -24,12 +27,26 @@ export default async function ProjektePage() {
         eyebrow="Alle Projekte"
         title="Projekte"
         description="Alle Neubauten und Umbaumaßnahmen über alle deine Immobilien hinweg."
+        action={
+          <LinkButton href="/projekte/neu">
+            <Plus className="h-4 w-4" strokeWidth={2.5} />
+            Projekt anlegen
+          </LinkButton>
+        }
       />
 
       {!projects?.length ? (
         <EmptyState
           title="Noch kein Projekt angelegt"
-          description="Öffne eine Immobilie, um dort ein Projekt anzulegen."
+          description="Lege dein erstes Projekt an — einen Neubau oder eine Umbaumaßnahme."
+          action={
+            <Link
+              href="/projekte/neu"
+              className="text-sm font-bold text-terracotta hover:text-terracotta-hover"
+            >
+              Projekt anlegen →
+            </Link>
+          }
         />
       ) : (
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">

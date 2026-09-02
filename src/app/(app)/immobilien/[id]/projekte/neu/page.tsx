@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { NewProjectForm } from "./NewProjectForm";
+import { NewProjectForm } from "@/components/projects/NewProjectForm";
 
 export default async function NewProjectPage(props: PageProps<"/immobilien/[id]/projekte/neu">) {
   const { id } = await props.params;

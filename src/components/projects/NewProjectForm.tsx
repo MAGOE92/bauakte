@@ -4,11 +4,28 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Field, Input, Textarea } from "@/components/ui/Field";
-import { createProject } from "./actions";
+import { Field, Input, Select, Textarea } from "@/components/ui/Field";
+import { createProject } from "@/lib/actions/projekte";
 
-export function NewProjectForm({ propertyId }: { propertyId: string }) {
+type ImmobilienOption = { id: string; name: string };
+
+/**
+ * Wird aus zwei Richtungen benutzt:
+ *   - aus einer Immobilie heraus: die Immobilie steht fest (propertyId)
+ *   - aus der Projektliste heraus: der Nutzer waehlt sie erst aus (properties)
+ * Deshalb die Union — beides gleichzeitig ergaebe keinen Sinn.
+ */
+type Props =
+  | { propertyId: string; properties?: never }
+  | { properties: ImmobilienOption[]; propertyId?: never };
+
+export function NewProjectForm(props: Props) {
   const router = useRouter();
+  const auswahlNoetig = props.propertyId === undefined;
+
+  const [propertyId, setPropertyId] = useState(
+    props.propertyId ?? props.properties?.[0]?.id ?? ""
+  );
   const [name, setName] = useState("");
   const [beschreibung, setBeschreibung] = useState("");
   const [zeitraumVon, setZeitraumVon] = useState("");
@@ -19,6 +36,11 @@ export function NewProjectForm({ propertyId }: { propertyId: string }) {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!propertyId) {
+      setError("Bitte eine Immobilie auswählen.");
+      return;
+    }
+
     setPending(true);
     setError(null);
 
@@ -43,6 +65,23 @@ export function NewProjectForm({ propertyId }: { propertyId: string }) {
   return (
     <Card className="max-w-xl">
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+        {auswahlNoetig && (
+          <Field label="Immobilie" htmlFor="proj-immobilie">
+            <Select
+              id="proj-immobilie"
+              required
+              value={propertyId}
+              onChange={(e) => setPropertyId(e.target.value)}
+            >
+              {props.properties.map((immobilie) => (
+                <option key={immobilie.id} value={immobilie.id}>
+                  {immobilie.name}
+                </option>
+              ))}
+            </Select>
+          </Field>
+        )}
+
         <Field label="Name" htmlFor="proj-name">
           <Input
             id="proj-name"
