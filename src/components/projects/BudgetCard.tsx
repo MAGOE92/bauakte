@@ -49,7 +49,7 @@ function BudgetStat({
   negative?: boolean;
 }) {
   return (
-    <div className="rounded-xl bg-cream-soft px-4 py-3">
+    <div className="rounded-xl bg-sunken px-4 py-3">
       <p className="text-xs font-semibold text-ink-soft">{label}</p>
       <p className={`font-display mt-1 text-lg font-bold ${negative ? "text-danger" : "text-ink"}`}>
         {formatCurrency(value)}

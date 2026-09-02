@@ -11,7 +11,7 @@ export function ProgressBar({
 }) {
   const clamped = Math.min(100, Math.max(0, percent));
   return (
-    <div className={cn("h-3 w-full overflow-hidden rounded-full bg-cream-soft", className)}>
+    <div className={cn("h-3 w-full overflow-hidden rounded-full bg-sunken", className)}>
       <div
         className={cn(
           "h-full rounded-full transition-[width]",

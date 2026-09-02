@@ -49,7 +49,7 @@ export function VergabeCard({
         </p>
       )}
 
-      <div className="mt-5 flex flex-col gap-3 border-t border-card-border pt-5">
+      <div className="mt-5 flex flex-col gap-3 border-t border-line pt-5">
         {angebote.length === 0 ? (
           <p className="text-sm text-ink-soft">Noch keine Angebote erfasst.</p>
         ) : (
@@ -123,7 +123,7 @@ function AngebotRow({
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-3 rounded-xl bg-cream-soft px-4 py-3">
+    <div className="flex flex-wrap items-center gap-3 rounded-xl bg-sunken px-4 py-3">
       <div className="min-w-0 flex-1">
         <p className="text-sm font-semibold text-ink">{firma?.name ?? "Unbekannte Firma"}</p>
         <p className="text-xs text-ink-soft">{formatCurrency(angebot.betrag)}</p>
@@ -242,7 +242,7 @@ function NewAngebotForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-3 rounded-xl border border-card-border p-4">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-3 rounded-xl border border-line p-4">
       {!creatingFirma ? (
         <Field label="Firma" htmlFor={`firma-${vergabeId}`}>
           <div className="flex gap-2">

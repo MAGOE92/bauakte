@@ -21,7 +21,7 @@ export function ProjectCard({
   return (
     <Link
       href={`/projekte/${project.id}`}
-      className="flex flex-col gap-4 rounded-2xl border border-card-border bg-white p-6 transition-colors hover:border-terracotta"
+      className="flex flex-col gap-4 rounded-2xl border border-line bg-surface shadow-card p-6 transition-colors hover:border-terracotta"
     >
       <div className="flex items-start justify-between gap-2">
         <span className="flex h-11 w-11 items-center justify-center rounded-full bg-terracotta-soft text-terracotta-hover">

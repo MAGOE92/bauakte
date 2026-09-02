@@ -65,7 +65,7 @@ export function LoginForm({
       </div>
 
       {registrierungOffen ? (
-        <div className="mb-6 flex rounded-full border border-card-border bg-white p-1">
+        <div className="mb-6 flex rounded-full border border-line bg-surface p-1">
           <button
             type="button"
             onClick={() => wechsleModus("login")}

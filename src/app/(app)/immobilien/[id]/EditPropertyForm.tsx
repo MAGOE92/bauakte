@@ -41,7 +41,7 @@ export function EditPropertyForm({ property }: { property: Tables<"properties"> 
       <button
         onClick={() => setOpen(true)}
         title="Immobilie bearbeiten"
-        className="flex h-9 w-9 items-center justify-center rounded-full border border-card-border text-ink-soft transition-colors hover:border-terracotta hover:text-terracotta"
+        className="flex h-9 w-9 items-center justify-center rounded-full border border-line text-ink-soft transition-colors hover:border-terracotta hover:text-terracotta"
       >
         <Pencil className="h-4 w-4" strokeWidth={2.25} />
       </button>

@@ -34,7 +34,7 @@ export function DocumentList({
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-card-border bg-white">
+    <div className="overflow-hidden rounded-2xl border border-line bg-surface shadow-card">
       {documents.map((doc, index) => (
         <DocumentRow key={doc.id} doc={doc} revalidate={revalidate} isLast={index === documents.length - 1} />
       ))}
@@ -74,9 +74,9 @@ function DocumentRow({
 
   return (
     <div
-      className={`flex items-center gap-4 px-5 py-4 ${!isLast ? "border-b border-card-border" : ""}`}
+      className={`flex items-center gap-4 px-5 py-4 ${!isLast ? "border-b border-line" : ""}`}
     >
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-cream-soft text-ink-soft">
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sunken text-ink-soft">
         <FileText className="h-4 w-4" strokeWidth={2.25} />
       </span>
       <div className="min-w-0 flex-1">
@@ -91,7 +91,7 @@ function DocumentRow({
       <button
         onClick={handleDownload}
         title="Herunterladen"
-        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-ink-soft transition-colors hover:bg-cream-soft hover:text-terracotta"
+        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-ink-soft transition-colors hover:bg-sunken hover:text-terracotta"
       >
         <Download className="h-4 w-4" />
       </button>

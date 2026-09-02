@@ -16,7 +16,7 @@ export function StatCard({
   return (
     <div
       className={cn(
-        "rounded-2xl border border-card-border bg-white p-5",
+        "rounded-2xl border border-line bg-surface shadow-card p-5",
         className
       )}
     >

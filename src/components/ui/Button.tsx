@@ -7,7 +7,7 @@ const base =
 const variants = {
   primary: "bg-terracotta text-white hover:bg-terracotta-hover",
   secondary:
-    "bg-white text-ink border border-card-border hover:border-terracotta hover:text-terracotta",
+    "bg-surface text-ink border border-line hover:border-terracotta hover:text-terracotta",
   ghost: "text-ink-soft hover:text-ink",
   danger: "bg-danger text-white hover:opacity-90",
 };

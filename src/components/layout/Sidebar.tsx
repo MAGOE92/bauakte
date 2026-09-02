@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutGrid, Building2, FolderKanban, Settings, LogOut, ShieldCheck } from "lucide-react";
 import { signOut } from "@/app/login/actions";
+import { ThemeToggle } from "./ThemeToggle";
 
 const NAV_ITEMS = [
   { href: "/uebersicht", label: "Übersicht", icon: LayoutGrid },
@@ -53,6 +54,8 @@ export function Sidebar({ email }: { email: string }) {
           </div>
           Deine Unterlagen sind nur für dich und die Firmen sichtbar, die du dafür freigibst.
         </div>
+
+        <ThemeToggle />
 
         <div className="flex items-center gap-3 border-t border-white/10 pt-4">
           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/10 font-display text-sm font-bold uppercase">

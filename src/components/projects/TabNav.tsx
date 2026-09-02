@@ -11,7 +11,7 @@ export type TabKey = (typeof TABS)[number]["key"];
 
 export function TabNav({ projectId, active }: { projectId: string; active: TabKey }) {
   return (
-    <div className="mb-6 flex gap-1 overflow-x-auto rounded-full border border-card-border bg-white p-1">
+    <div className="mb-6 flex gap-1 overflow-x-auto rounded-full border border-line bg-surface p-1">
       {TABS.map((tab) => (
         <Link
           key={tab.key}

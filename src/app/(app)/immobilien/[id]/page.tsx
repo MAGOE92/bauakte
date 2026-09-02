@@ -60,7 +60,7 @@ export default async function ImmobilieDetailPage(props: PageProps<"/immobilien/
       </div>
 
       <div className="mb-10 grid grid-cols-1 gap-5 sm:grid-cols-3">
-        <div className="rounded-2xl border border-card-border bg-white p-5">
+        <div className="rounded-2xl border border-line bg-surface shadow-card p-5">
           <p className="font-display text-xs font-bold uppercase tracking-[0.1em] text-ink-soft">Status</p>
           <div className="mt-3">
             <Badge tone={immobilieStatusTone[property.status]}>{immobilieStatusLabel[property.status]}</Badge>

@@ -29,7 +29,7 @@ export function FreigabenSection({
           description="Erstelle einen zeitlich befristeten Link, z. B. für deine Bank."
         />
       ) : (
-        <div className="overflow-hidden rounded-2xl border border-card-border bg-white">
+        <div className="overflow-hidden rounded-2xl border border-line bg-surface shadow-card">
           {freigaben.map((f, index) => (
             <FreigabeRow key={f.id} freigabe={f} projectId={projectId} isLast={index === freigaben.length - 1} />
           ))}
@@ -76,7 +76,7 @@ function FreigabeRow({
   }
 
   return (
-    <div className={`flex flex-wrap items-center gap-4 px-5 py-4 ${!isLast ? "border-b border-card-border" : ""}`}>
+    <div className={`flex flex-wrap items-center gap-4 px-5 py-4 ${!isLast ? "border-b border-line" : ""}`}>
       <div className="min-w-0 flex-1">
         <p className="text-sm font-semibold text-ink">{freigabe.empfaenger_name}</p>
         <p className="mt-0.5 text-xs text-ink-soft">
@@ -89,7 +89,7 @@ function FreigabeRow({
         onClick={handleCopy}
         disabled={!active}
         title="Link kopieren"
-        className="flex h-8 w-8 items-center justify-center rounded-full text-ink-soft transition-colors hover:bg-cream-soft hover:text-terracotta disabled:opacity-40"
+        className="flex h-8 w-8 items-center justify-center rounded-full text-ink-soft transition-colors hover:bg-sunken hover:text-terracotta disabled:opacity-40"
       >
         {copied ? <Check className="h-4 w-4 text-success" /> : <Link2 className="h-4 w-4" />}
       </button>

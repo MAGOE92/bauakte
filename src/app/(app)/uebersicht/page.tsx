@@ -73,7 +73,7 @@ export default async function UebersichtPage() {
                 <Link
                   key={property.id}
                   href={`/immobilien/${property.id}`}
-                  className="flex items-center gap-4 rounded-2xl border border-card-border bg-white px-5 py-4 transition-colors hover:border-terracotta"
+                  className="flex items-center gap-4 rounded-2xl border border-line bg-surface shadow-card px-5 py-4 transition-colors hover:border-terracotta"
                 >
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-terracotta-soft text-terracotta-hover">
                     <Building2 className="h-4 w-4" strokeWidth={2.25} />
@@ -129,7 +129,7 @@ export default async function UebersichtPage() {
                 {documents.map((doc) => (
                   <Card key={doc.id} className="p-4">
                     <div className="flex items-center gap-3">
-                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-cream-soft text-ink-soft">
+                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-sunken text-ink-soft">
                         <FileText className="h-4 w-4" strokeWidth={2.25} />
                       </span>
                       <div className="min-w-0 flex-1">

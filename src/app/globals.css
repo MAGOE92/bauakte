@@ -1,56 +1,159 @@
 @import "tailwindcss";
 
+/*
+ * Farben liegen als Rohwerte unter --bk-* und werden weiter unten fuer
+ * Tailwind gemappt. Dadurch laesst sich der komplette Satz pro Farbschema
+ * austauschen, ohne eine einzige Utility-Klasse anzufassen.
+ *
+ * Die Namen sind bewusst semantisch (canvas/surface/line), nicht beschreibend
+ * (cream/white/sand) — im Dunkelmodus waere "cream" schlicht gelogen.
+ */
 :root {
-  --color-cream: #f5f1ea;
-  --color-cream-soft: #efe9de;
-  --color-navy: #1c2530;
-  --color-navy-soft: #26313f;
-  --color-terracotta: #d9633f;
-  --color-terracotta-hover: #c25532;
-  --color-terracotta-soft: #fbe6dd;
-  --color-card-border: #e5ddc9;
-  --color-ink: #2a251f;
-  --color-ink-soft: #6f6759;
+  color-scheme: light;
 
-  --color-success: #2f7d5b;
-  --color-success-soft: #e1f0e7;
-  --color-warning: #a9700c;
-  --color-warning-soft: #faedd4;
-  --color-danger: #c0392b;
-  --color-danger-soft: #fbe3e0;
-  --color-info: #3b6ea5;
-  --color-info-soft: #e2ebf4;
-  --color-neutral-soft: #eae4d8;
+  /* Flaechen: canvas = Seite, surface = Karte, sunken = eingelassene Zone.
+     Der Abstand zwischen canvas und surface macht aus, wie deutlich die
+     Karten stehen — deshalb ist canvas spuerbar dunkler als reines Weiss. */
+  --bk-canvas: #eee7da;
+  --bk-surface: #ffffff;
+  --bk-sunken: #f6f2e9;
+  --bk-line: #dccfb6;
+  --bk-line-strong: #c9b898;
+
+  --bk-ink: #2a251f;
+  --bk-ink-soft: #6f6759;
+
+  /* Seitenleiste: in beiden Schemata dunkel, das ist Teil der Gestaltung. */
+  --bk-navy: #1c2530;
+  --bk-navy-soft: #26313f;
+
+  --bk-terracotta: #d9633f;
+  --bk-terracotta-hover: #c25532;
+  --bk-terracotta-soft: #fbe6dd;
+
+  --bk-success: #2f7d5b;
+  --bk-success-soft: #e1f0e7;
+  --bk-warning: #a9700c;
+  --bk-warning-soft: #faedd4;
+  --bk-danger: #c0392b;
+  --bk-danger-soft: #fbe3e0;
+  --bk-info: #3b6ea5;
+  --bk-info-soft: #e2ebf4;
+  --bk-neutral-soft: #e8e0d0;
+
+  --bk-shadow-card: 0 1px 2px rgb(65 50 30 / 0.05), 0 10px 24px -18px rgb(65 50 30 / 0.45);
+}
+
+/*
+ * Dunkelmodus. Bewusst weich gehalten: kein Schwarz, sondern ein warm
+ * abgetoentes Dunkelblau, und die Karten sind HELLER als der Hintergrund —
+ * so heben sie sich ab, ohne dass es hart wirkt.
+ *
+ * Zweimal notiert, weil beides gelten muss: dem System folgen, solange nichts
+ * gewaehlt wurde, und der ausdruecklichen Wahl folgen, sobald es eine gibt.
+ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --bk-canvas: #171d24;
+    --bk-surface: #202932;
+    --bk-sunken: #1a2129;
+    --bk-line: #313d49;
+    --bk-line-strong: #43515f;
+
+    --bk-ink: #eae4d9;
+    --bk-ink-soft: #97a2af;
+
+    --bk-navy: #111820;
+    --bk-navy-soft: #1e2833;
+
+    --bk-terracotta: #e2724d;
+    --bk-terracotta-hover: #ee8560;
+    --bk-terracotta-soft: #3b261f;
+
+    --bk-success: #63c294;
+    --bk-success-soft: #1b3328;
+    --bk-warning: #d6a33f;
+    --bk-warning-soft: #372c16;
+    --bk-danger: #e5705c;
+    --bk-danger-soft: #38211d;
+    --bk-info: #74a6da;
+    --bk-info-soft: #1c2b3c;
+    --bk-neutral-soft: #2b3540;
+
+    --bk-shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 12px 28px -20px rgb(0 0 0 / 0.8);
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bk-canvas: #171d24;
+  --bk-surface: #202932;
+  --bk-sunken: #1a2129;
+  --bk-line: #313d49;
+  --bk-line-strong: #43515f;
+
+  --bk-ink: #eae4d9;
+  --bk-ink-soft: #97a2af;
+
+  --bk-navy: #111820;
+  --bk-navy-soft: #1e2833;
+
+  --bk-terracotta: #e2724d;
+  --bk-terracotta-hover: #ee8560;
+  --bk-terracotta-soft: #3b261f;
+
+  --bk-success: #63c294;
+  --bk-success-soft: #1b3328;
+  --bk-warning: #d6a33f;
+  --bk-warning-soft: #372c16;
+  --bk-danger: #e5705c;
+  --bk-danger-soft: #38211d;
+  --bk-info: #74a6da;
+  --bk-info-soft: #1c2b3c;
+  --bk-neutral-soft: #2b3540;
+
+  --bk-shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 12px 28px -20px rgb(0 0 0 / 0.8);
 }
 
 @theme inline {
-  --color-cream: var(--color-cream);
-  --color-cream-soft: var(--color-cream-soft);
-  --color-navy: var(--color-navy);
-  --color-navy-soft: var(--color-navy-soft);
-  --color-terracotta: var(--color-terracotta);
-  --color-terracotta-hover: var(--color-terracotta-hover);
-  --color-terracotta-soft: var(--color-terracotta-soft);
-  --color-card-border: var(--color-card-border);
-  --color-ink: var(--color-ink);
-  --color-ink-soft: var(--color-ink-soft);
-  --color-success: var(--color-success);
-  --color-success-soft: var(--color-success-soft);
-  --color-warning: var(--color-warning);
-  --color-warning-soft: var(--color-warning-soft);
-  --color-danger: var(--color-danger);
-  --color-danger-soft: var(--color-danger-soft);
-  --color-info: var(--color-info);
-  --color-info-soft: var(--color-info-soft);
-  --color-neutral-soft: var(--color-neutral-soft);
+  --color-canvas: var(--bk-canvas);
+  --color-surface: var(--bk-surface);
+  --color-sunken: var(--bk-sunken);
+  --color-line: var(--bk-line);
+  --color-line-strong: var(--bk-line-strong);
+
+  --color-ink: var(--bk-ink);
+  --color-ink-soft: var(--bk-ink-soft);
+
+  --color-navy: var(--bk-navy);
+  --color-navy-soft: var(--bk-navy-soft);
+
+  --color-terracotta: var(--bk-terracotta);
+  --color-terracotta-hover: var(--bk-terracotta-hover);
+  --color-terracotta-soft: var(--bk-terracotta-soft);
+
+  --color-success: var(--bk-success);
+  --color-success-soft: var(--bk-success-soft);
+  --color-warning: var(--bk-warning);
+  --color-warning-soft: var(--bk-warning-soft);
+  --color-danger: var(--bk-danger);
+  --color-danger-soft: var(--bk-danger-soft);
+  --color-info: var(--bk-info);
+  --color-info-soft: var(--bk-info-soft);
+  --color-neutral-soft: var(--bk-neutral-soft);
+
+  --shadow-card: var(--bk-shadow-card);
 
   --font-display: var(--font-plus-jakarta), ui-sans-serif, system-ui, sans-serif;
   --font-body: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
 }
 
 body {
-  background: var(--color-cream);
-  color: var(--color-ink);
+  background: var(--bk-canvas);
+  color: var(--bk-ink);
   font-family: var(--font-body);
 }
 
@@ -59,6 +162,6 @@ body {
 }
 
 ::selection {
-  background: var(--color-terracotta-soft);
-  color: var(--color-ink);
+  background: var(--bk-terracotta-soft);
+  color: var(--bk-ink);
 }

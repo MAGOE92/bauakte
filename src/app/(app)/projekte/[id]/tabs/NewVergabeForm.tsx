@@ -86,14 +86,14 @@ export function NewVergabeForm({ projectId, documents }: { projectId: string; do
           {documents.length === 0 ? (
             <p className="text-xs text-ink-soft">Noch keine Unterlagen vorhanden.</p>
           ) : (
-            <div className="flex max-h-40 flex-col gap-2 overflow-y-auto rounded-xl border border-card-border p-3">
+            <div className="flex max-h-40 flex-col gap-2 overflow-y-auto rounded-xl border border-line p-3">
               {documents.map((doc) => (
                 <label key={doc.id} className="flex items-center gap-2 text-sm text-ink">
                   <input
                     type="checkbox"
                     checked={dokumentIds.includes(doc.id)}
                     onChange={() => toggleDoc(doc.id)}
-                    className="h-4 w-4 rounded border-card-border accent-terracotta"
+                    className="h-4 w-4 rounded border-line accent-terracotta"
                   />
                   {doc.name}
                   <span className="text-xs text-ink-soft">({doc.kategorie})</span>

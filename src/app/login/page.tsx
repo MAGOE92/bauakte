@@ -7,7 +7,7 @@ export default async function LoginPage(props: PageProps<"/login">) {
   const next = typeof nextParam === "string" && nextParam.startsWith("/") ? nextParam : "/uebersicht";
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-cream px-6">
+    <main className="flex min-h-screen items-center justify-center bg-canvas px-6">
       <LoginForm next={next} registrierungOffen={istRegistrierungOffen()} />
     </main>
   );

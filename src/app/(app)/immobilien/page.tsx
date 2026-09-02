@@ -45,7 +45,7 @@ export default async function ImmobilienPage() {
             <Link
               key={property.id}
               href={`/immobilien/${property.id}`}
-              className="flex flex-col gap-4 rounded-2xl border border-card-border bg-white p-6 transition-colors hover:border-terracotta"
+              className="flex flex-col gap-4 rounded-2xl border border-line bg-surface shadow-card p-6 transition-colors hover:border-terracotta"
             >
               <div className="flex items-start justify-between gap-2">
                 <span className="flex h-11 w-11 items-center justify-center rounded-full bg-terracotta-soft text-terracotta-hover">
@@ -69,7 +69,7 @@ export default async function ImmobilienPage() {
                 )}
               </div>
 
-              <div className="mt-auto flex items-center gap-4 border-t border-card-border pt-4 text-xs font-semibold text-ink-soft">
+              <div className="mt-auto flex items-center gap-4 border-t border-line pt-4 text-xs font-semibold text-ink-soft">
                 <span className="flex items-center gap-1.5">
                   <FolderKanban className="h-3.5 w-3.5" />
                   {projectCount.get(property.id) ?? 0} Projekte

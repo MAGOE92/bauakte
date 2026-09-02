@@ -25,7 +25,7 @@ export function EinnahmenSection({
       {!einnahmen.length ? (
         <EmptyState title="Noch keine Einnahmen erfasst" description="Erfasse z. B. Fördergelder oder Mieteinnahmen für dieses Projekt." />
       ) : (
-        <div className="overflow-hidden rounded-2xl border border-card-border bg-white">
+        <div className="overflow-hidden rounded-2xl border border-line bg-surface shadow-card">
           {einnahmen.map((e, index) => (
             <EinnahmeRow key={e.id} einnahme={e} projectId={projectId} isLast={index === einnahmen.length - 1} />
           ))}
@@ -56,7 +56,7 @@ function EinnahmeRow({
   }
 
   return (
-    <div className={`flex items-center gap-4 px-5 py-4 ${!isLast ? "border-b border-card-border" : ""}`}>
+    <div className={`flex items-center gap-4 px-5 py-4 ${!isLast ? "border-b border-line" : ""}`}>
       <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-success-soft text-success">
         <TrendingUp className="h-4 w-4" strokeWidth={2.25} />
       </span>

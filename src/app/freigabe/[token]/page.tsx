@@ -32,7 +32,7 @@ export default async function FreigabePage(props: PageProps<"/freigabe/[token]">
     };
 
     return (
-      <main className="flex min-h-screen items-center justify-center bg-cream px-6">
+      <main className="flex min-h-screen items-center justify-center bg-canvas px-6">
         <div className="w-full max-w-sm text-center">
           <BrandHeader />
           <Card className="flex flex-col items-center gap-3 py-10 text-center">
@@ -51,7 +51,7 @@ export default async function FreigabePage(props: PageProps<"/freigabe/[token]">
   const summary = berechneBudget(result.project.budget_gesamt, result.ausgaben, result.einnahmen);
 
   return (
-    <main className="min-h-screen bg-cream px-6 py-12">
+    <main className="min-h-screen bg-canvas px-6 py-12">
       <div className="mx-auto max-w-3xl">
         <BrandHeader />
 
@@ -83,18 +83,18 @@ export default async function FreigabePage(props: PageProps<"/freigabe/[token]">
             <p className="text-sm text-ink-soft">Für dieses Projekt wurden noch keine Unterlagen freigegeben.</p>
           </Card>
         ) : (
-          <div className="overflow-hidden rounded-2xl border border-card-border bg-white">
+          <div className="overflow-hidden rounded-2xl border border-line bg-surface shadow-card">
             {result.documents.map((doc, index) => (
               <a
                 key={doc.id}
                 href={`${functionsBase}/freigabe-datei?token=${encodeURIComponent(token)}&document_id=${doc.id}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`flex items-center gap-4 px-5 py-4 transition-colors hover:bg-cream-soft ${
-                  index !== result.documents.length - 1 ? "border-b border-card-border" : ""
+                className={`flex items-center gap-4 px-5 py-4 transition-colors hover:bg-sunken ${
+                  index !== result.documents.length - 1 ? "border-b border-line" : ""
                 }`}
               >
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-cream-soft text-ink-soft">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sunken text-ink-soft">
                   <FileText className="h-4 w-4" strokeWidth={2.25} />
                 </span>
                 <div className="min-w-0 flex-1">

@@ -76,7 +76,7 @@ export function DocumentUploader({
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col gap-4 rounded-2xl border border-dashed border-card-border bg-white p-5 sm:flex-row sm:items-end sm:gap-3"
+      className="flex flex-col gap-4 rounded-2xl border border-dashed border-line bg-surface p-5 sm:flex-row sm:items-end sm:gap-3"
     >
       <Field label="Kategorie" htmlFor="doc-kategorie" className="sm:w-48">
         <Select id="doc-kategorie" value={category} onChange={(e) => setCategory(e.target.value)}>

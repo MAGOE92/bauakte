@@ -58,7 +58,7 @@ export function ProjektFirmaCard({
     return (
       <form
         onSubmit={handleSubmit}
-        className="grid w-full grid-cols-1 gap-3 rounded-xl border border-card-border bg-white p-4 sm:grid-cols-2"
+        className="grid w-full grid-cols-1 gap-3 rounded-xl border border-line bg-surface p-4 sm:grid-cols-2"
       >
         <div className="flex items-center justify-between sm:col-span-2">
           <p className="font-display text-sm font-bold text-ink">Firma bearbeiten</p>
@@ -97,7 +97,7 @@ export function ProjektFirmaCard({
   }
 
   return (
-    <div className="flex items-center gap-3 rounded-xl border border-card-border bg-white px-4 py-3">
+    <div className="flex items-center gap-3 rounded-xl border border-line bg-surface px-4 py-3">
       <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-terracotta-soft text-terracotta-hover">
         <Users className="h-4 w-4" strokeWidth={2.25} />
       </span>
@@ -131,7 +131,7 @@ export function ProjektFirmaCard({
         <button
           onClick={() => setEditing(true)}
           title="Firma bearbeiten"
-          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-ink-soft transition-colors hover:bg-cream-soft hover:text-terracotta"
+          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-ink-soft transition-colors hover:bg-sunken hover:text-terracotta"
         >
           <Pencil className="h-3.5 w-3.5" />
         </button>

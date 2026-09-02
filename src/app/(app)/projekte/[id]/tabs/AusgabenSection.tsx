@@ -27,10 +27,10 @@ export function AusgabenSection({
       {!ausgaben.length ? (
         <EmptyState title="Noch keine Ausgaben erfasst" description="Erfasse Rechnungen und Kosten für dieses Projekt." />
       ) : (
-        <div className="overflow-x-auto rounded-2xl border border-card-border bg-white">
+        <div className="overflow-x-auto rounded-2xl border border-line bg-surface shadow-card">
           <table className="w-full min-w-[640px] text-left text-sm">
             <thead>
-              <tr className="border-b border-card-border text-xs font-semibold uppercase tracking-wide text-ink-soft">
+              <tr className="border-b border-line text-xs font-semibold uppercase tracking-wide text-ink-soft">
                 <th className="px-5 py-3">Bezeichnung</th>
                 <th className="px-5 py-3">Kategorie</th>
                 <th className="px-5 py-3">Fällig</th>
@@ -71,7 +71,7 @@ function AusgabeRow({ ausgabe, projectId }: { ausgabe: Tables<"ausgaben">; proje
   }
 
   return (
-    <tr className="border-b border-card-border last:border-0">
+    <tr className="border-b border-line last:border-0">
       <td className="px-5 py-3.5">
         <p className="font-semibold text-ink">{ausgabe.bezeichnung}</p>
         <p className="text-xs text-ink-soft">{ausgabeArtLabel[ausgabe.art]}</p>
