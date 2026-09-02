@@ -33,6 +33,9 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 !.env*.example
+# .env.production enthaelt nur oeffentliche Werte (URL + Publishable Key) und
+# gehoert bewusst ins Repo, damit ein Deployment ohne Zusatzkonfiguration laeuft.
+!.env.production
 
 # vercel
 .vercel
