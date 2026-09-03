@@ -18,7 +18,7 @@ export default async function UebersichtPage() {
   const [{ data: properties }, { data: projects }, { data: ausgaben }, { data: documents }] = await Promise.all([
     supabase.from("properties").select("*").order("erstellt_am", { ascending: false }),
     supabase.from("projects").select("*"),
-    supabase.from("ausgaben").select("betrag"),
+    supabase.from("ausgaben").select("betrag, project_id"),
     supabase
       .from("documents")
       .select("id, name, kategorie, hochgeladen_am, property_id, project_id")
@@ -27,13 +27,25 @@ export default async function UebersichtPage() {
   ]);
 
   const propertyById = new Map((properties ?? []).map((p) => [p.id, p]));
-  const aktiveProjekte = (projects ?? []).filter((p) => p.status === "laufend");
-  const gesamtbudget = (projects ?? []).reduce((sum, p) => sum + p.budget_gesamt, 0);
-  const gesamtausgaben = (ausgaben ?? []).reduce((sum, a) => sum + a.betrag, 0);
 
-  const naechsteFrist = (projects ?? [])
-    .filter((p) => p.zeitraum_bis && new Date(p.zeitraum_bis) >= new Date())
-    .sort((a, b) => new Date(a.zeitraum_bis!).getTime() - new Date(b.zeitraum_bis!).getTime())[0];
+  // Die Uebersicht zeigt den aktuellen Stand. Abgeschlossene und verworfene
+  // Projekte zaehlen deshalb nicht mehr mit — ihre Zahlen stehen weiter im
+  // Projekt selbst und im Cashflow der Immobilie.
+  const offeneProjekte = (projects ?? []).filter(
+    (p) => p.status === "geplant" || p.status === "laufend"
+  );
+  const abgeschlossene = (projects ?? []).filter((p) => p.status === "abgeschlossen");
+  const offeneIds = new Set(offeneProjekte.map((p) => p.id));
+
+  const gesamtbudget = offeneProjekte.reduce((sum, p) => sum + p.budget_gesamt, 0);
+  const gesamtausgaben = (ausgaben ?? [])
+    .filter((a) => a.project_id !== null && offeneIds.has(a.project_id))
+    .reduce((sum, a) => sum + a.betrag, 0);
+
+  const heute = new Date().toISOString().slice(0, 10);
+  const naechsteFrist = offeneProjekte
+    .filter((p) => p.zeitraum_bis && p.zeitraum_bis >= heute)
+    .sort((a, b) => a.zeitraum_bis!.localeCompare(b.zeitraum_bis!))[0];
 
   const displayName =
     (user?.user_metadata?.full_name as string | undefined)?.trim() || user?.email?.split("@")[0] || "";
@@ -50,9 +62,14 @@ export default async function UebersichtPage() {
 
       <div className="mb-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard label="Immobilien" value={String(properties?.length ?? 0)} icon={<Building2 className="h-4 w-4" strokeWidth={2.25} />} />
-        <StatCard label="Aktive Projekte" value={String(aktiveProjekte.length)} icon={<FolderKanban className="h-4 w-4" strokeWidth={2.25} />} />
-        <StatCard label="Kostenrahmen" value={formatCurrency(gesamtbudget)} hint="Über alle Projekte" icon={<Wallet className="h-4 w-4" strokeWidth={2.25} />} />
-        <StatCard label="Verplant" value={formatCurrency(gesamtausgaben)} hint="Bereits erfasste Kosten" icon={<Receipt className="h-4 w-4" strokeWidth={2.25} />} />
+        <StatCard
+          label="Offene Projekte"
+          value={String(offeneProjekte.length)}
+          hint={abgeschlossene.length ? `${abgeschlossene.length} abgeschlossen` : undefined}
+          icon={<FolderKanban className="h-4 w-4" strokeWidth={2.25} />}
+        />
+        <StatCard label="Kostenrahmen" value={formatCurrency(gesamtbudget)} hint="Offene Projekte" icon={<Wallet className="h-4 w-4" strokeWidth={2.25} />} />
+        <StatCard label="Verplant" value={formatCurrency(gesamtausgaben)} hint="Kosten offener Projekte" icon={<Receipt className="h-4 w-4" strokeWidth={2.25} />} />
       </div>
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
