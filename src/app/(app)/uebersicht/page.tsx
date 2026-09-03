@@ -51,8 +51,8 @@ export default async function UebersichtPage() {
       <div className="mb-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard label="Immobilien" value={String(properties?.length ?? 0)} icon={<Building2 className="h-4 w-4" strokeWidth={2.25} />} />
         <StatCard label="Aktive Projekte" value={String(aktiveProjekte.length)} icon={<FolderKanban className="h-4 w-4" strokeWidth={2.25} />} />
-        <StatCard label="Gesamtbudget" value={formatCurrency(gesamtbudget)} icon={<Wallet className="h-4 w-4" strokeWidth={2.25} />} />
-        <StatCard label="Ausgaben" value={formatCurrency(gesamtausgaben)} icon={<Receipt className="h-4 w-4" strokeWidth={2.25} />} />
+        <StatCard label="Kostenrahmen" value={formatCurrency(gesamtbudget)} hint="Über alle Projekte" icon={<Wallet className="h-4 w-4" strokeWidth={2.25} />} />
+        <StatCard label="Verplant" value={formatCurrency(gesamtausgaben)} hint="Bereits erfasste Kosten" icon={<Receipt className="h-4 w-4" strokeWidth={2.25} />} />
       </div>
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">

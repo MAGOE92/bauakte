@@ -2,7 +2,7 @@ import { TabNav as BasisTabNav } from "@/components/ui/TabNav";
 
 const TABS = [
   { key: "unterlagen", label: "Unterlagen" },
-  { key: "budget", label: "Budget & Ausgaben" },
+  { key: "budget", label: "Kosten & Einnahmen" },
   { key: "angebote", label: "Angebote" },
   { key: "freigaben", label: "Freigaben" },
 ] as const;

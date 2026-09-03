@@ -17,7 +17,7 @@ export async function createProject(input: {
 
   const budget = input.budgetGesamt.trim() === "" ? 0 : Number(input.budgetGesamt.replace(",", "."));
   if (Number.isNaN(budget) || budget < 0) {
-    return { status: "error", message: "Bitte ein gültiges Budget angeben." };
+    return { status: "error", message: "Bitte einen gültigen Kostenrahmen angeben." };
   }
 
   if (input.zeitraumVon && input.zeitraumBis && input.zeitraumVon > input.zeitraumBis) {

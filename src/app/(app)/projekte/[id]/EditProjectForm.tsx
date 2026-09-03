@@ -87,7 +87,11 @@ export function EditProjectForm({ project }: { project: Tables<"projects"> }) {
         <Field label="Ende" htmlFor="edit-proj-bis" hint="Optional">
           <Input id="edit-proj-bis" type="date" value={zeitraumBis} onChange={(e) => setZeitraumBis(e.target.value)} />
         </Field>
-        <Field label="Budget" htmlFor="edit-proj-budget" hint="In Euro">
+        <Field
+          label="Kostenrahmen"
+          htmlFor="edit-proj-budget"
+          hint="Was das Projekt kosten darf, in Euro — kein Guthaben"
+        >
           <Input id="edit-proj-budget" type="number" min="0" step="0.01" value={budgetGesamt} onChange={(e) => setBudgetGesamt(e.target.value)} />
         </Field>
 

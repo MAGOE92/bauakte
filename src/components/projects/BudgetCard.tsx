@@ -4,35 +4,40 @@ import { formatCurrency } from "@/lib/format";
 import type { BudgetSummary } from "@/lib/budget";
 
 export function BudgetCard({ summary }: { summary: BudgetSummary }) {
-  const overBudget = summary.verfuegbar < 0;
+  const ueberzogen = summary.nichtVerplant < 0;
 
   return (
     <Card className="mb-8">
       <div className="flex flex-wrap items-end justify-between gap-2">
         <div>
           <p className="font-display text-xs font-bold uppercase tracking-[0.1em] text-ink-soft">
-            Budgetfortschritt
+            Kostenrahmen
           </p>
           <p className="font-display mt-1 text-2xl font-extrabold text-ink">
             {formatCurrency(summary.verplant)}{" "}
             <span className="text-base font-semibold text-ink-soft">
-              von {formatCurrency(summary.budgetGesamt)}
+              von {formatCurrency(summary.budgetGesamt)} verplant
             </span>
           </p>
         </div>
-        {overBudget && (
+        {ueberzogen && (
           <span className="rounded-full bg-danger-soft px-3 py-1 text-xs font-bold text-danger">
-            Budget überschritten
+            Kostenrahmen überschritten
           </span>
         )}
       </div>
 
-      <ProgressBar percent={summary.fortschrittProzent} overBudget={overBudget} className="mt-4" />
+      <ProgressBar percent={summary.fortschrittProzent} overBudget={ueberzogen} className="mt-4" />
 
-      <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+      <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
         <BudgetStat label="Verplant" value={summary.verplant} />
         <BudgetStat label="Bezahlt" value={summary.bezahlt} />
-        <BudgetStat label="Verfügbar" value={summary.verfuegbar} negative={overBudget} />
+        <BudgetStat label="Noch offen" value={summary.offen} />
+        <BudgetStat
+          label="Nicht verplant"
+          value={summary.nichtVerplant}
+          negative={ueberzogen}
+        />
         <BudgetStat label="Einnahmen" value={summary.einnahmen} />
       </div>
     </Card>

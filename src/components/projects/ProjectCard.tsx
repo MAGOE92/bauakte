@@ -44,7 +44,7 @@ export function ProjectCard({
       <div className="mt-auto">
         <div className="flex items-center justify-between text-xs font-semibold text-ink-soft">
           <span>{formatCurrency(verplant)} verplant</span>
-          <span>{formatCurrency(project.budget_gesamt)} Budget</span>
+          <span>von {formatCurrency(project.budget_gesamt)}</span>
         </div>
         <ProgressBar percent={percent} overBudget={overBudget} className="mt-2" />
       </div>

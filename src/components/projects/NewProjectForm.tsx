@@ -120,7 +120,11 @@ export function NewProjectForm(props: Props) {
           </Field>
         </div>
 
-        <Field label="Budget" htmlFor="proj-budget" hint="In Euro">
+        <Field
+          label="Kostenrahmen"
+          htmlFor="proj-budget"
+          hint="Was das Projekt kosten darf, in Euro — kein Guthaben"
+        >
           <Input
             id="proj-budget"
             type="number"
