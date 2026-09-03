@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/Badge";
 import { formatCurrency, formatDate } from "@/lib/format";
 import { immobilieStatusLabel, immobilieStatusTone } from "@/lib/labels";
 import { Building2, FolderKanban, Wallet, Receipt, CalendarClock, FileText, MapPin } from "lucide-react";
+import { QuickAusgabeButton } from "./QuickAusgabeButton";
 
 export default async function UebersichtPage() {
   const supabase = await createClient();
@@ -52,12 +53,18 @@ export default async function UebersichtPage() {
 
   return (
     <div>
-      <div className="mb-8">
-        <Eyebrow>Übersicht</Eyebrow>
-        <h1 className="font-display mt-1 text-3xl font-extrabold text-ink">
-          Willkommen zurück{displayName ? `, ${displayName}` : ""}
-        </h1>
-        <p className="mt-2 text-sm text-ink-soft">Hier ist der aktuelle Stand deiner Immobilien und Projekte.</p>
+      <div className="mb-8 flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <Eyebrow>Übersicht</Eyebrow>
+          <h1 className="font-display mt-1 text-2xl font-extrabold text-ink sm:text-3xl">
+            Willkommen zurück{displayName ? `, ${displayName}` : ""}
+          </h1>
+          <p className="mt-2 text-sm text-ink-soft">Hier ist der aktuelle Stand deiner Immobilien und Projekte.</p>
+        </div>
+        <QuickAusgabeButton
+          properties={(properties ?? []).map((p) => ({ id: p.id, name: p.name }))}
+          projects={(projects ?? []).map((p) => ({ id: p.id, name: p.name, property_id: p.property_id }))}
+        />
       </div>
 
       <div className="mb-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">

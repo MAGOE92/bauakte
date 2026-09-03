@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { LinkButton } from "@/components/ui/Button";
-import { ProjectCard } from "@/components/projects/ProjectCard";
+import { ProjekteListe } from "./ProjekteListe";
 
 export default async function ProjektePage() {
   const supabase = await createClient();
@@ -51,16 +51,13 @@ export default async function ProjektePage() {
           }
         />
       ) : (
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project) => (
-            <ProjectCard
-              key={project.id}
-              project={project}
-              verplant={verplantByProject.get(project.id) ?? 0}
-              propertyName={propertyNames.get(project.property_id)}
-            />
-          ))}
-        </div>
+        <ProjekteListe
+          projekte={projects.map((project) => ({
+            project,
+            verplant: verplantByProject.get(project.id) ?? 0,
+            propertyName: propertyNames.get(project.property_id),
+          }))}
+        />
       )}
     </div>
   );
