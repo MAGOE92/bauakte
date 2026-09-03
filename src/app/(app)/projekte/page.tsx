@@ -18,6 +18,8 @@ export default async function ProjektePage() {
   const propertyNames = new Map((properties ?? []).map((p) => [p.id, p.name]));
   const verplantByProject = new Map<string, number>();
   for (const a of ausgaben ?? []) {
+    // Ausgaben koennen auch direkt an der Immobilie haengen — die zaehlen hier nicht mit.
+    if (!a.project_id) continue;
     verplantByProject.set(a.project_id, (verplantByProject.get(a.project_id) ?? 0) + a.betrag);
   }
 

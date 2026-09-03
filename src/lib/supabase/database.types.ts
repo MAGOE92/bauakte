@@ -82,12 +82,14 @@ export type Database = {
           bezahlt_am: string | null
           bezeichnung: string
           dokument_id: string | null
+          einheit_id: string | null
           erstellt_am: string
           faellig_am: string | null
           firma_id: string | null
           id: string
           kategorie: Database["public"]["Enums"]["ausgabe_kategorie"]
-          project_id: string
+          project_id: string | null
+          property_id: string
         }
         Insert: {
           art?: Database["public"]["Enums"]["ausgabe_art"]
@@ -96,12 +98,14 @@ export type Database = {
           bezahlt_am?: string | null
           bezeichnung: string
           dokument_id?: string | null
+          einheit_id?: string | null
           erstellt_am?: string
           faellig_am?: string | null
           firma_id?: string | null
           id?: string
           kategorie: Database["public"]["Enums"]["ausgabe_kategorie"]
-          project_id: string
+          project_id?: string | null
+          property_id: string
         }
         Update: {
           art?: Database["public"]["Enums"]["ausgabe_art"]
@@ -110,12 +114,14 @@ export type Database = {
           bezahlt_am?: string | null
           bezeichnung?: string
           dokument_id?: string | null
+          einheit_id?: string | null
           erstellt_am?: string
           faellig_am?: string | null
           firma_id?: string | null
           id?: string
           kategorie?: Database["public"]["Enums"]["ausgabe_kategorie"]
-          project_id?: string
+          project_id?: string | null
+          property_id?: string
         }
         Relationships: [
           {
@@ -195,33 +201,83 @@ export type Database = {
           },
         ]
       }
+      einheiten: {
+        Row: {
+          erstellt_am: string
+          geaendert_am: string
+          id: string
+          mieter_name: string | null
+          name: string
+          notizen: string | null
+          nutzung: Database["public"]["Enums"]["einheit_nutzung"]
+          property_id: string
+          wohnflaeche: number | null
+        }
+        Insert: {
+          erstellt_am?: string
+          geaendert_am?: string
+          id?: string
+          mieter_name?: string | null
+          name: string
+          notizen?: string | null
+          nutzung?: Database["public"]["Enums"]["einheit_nutzung"]
+          property_id: string
+          wohnflaeche?: number | null
+        }
+        Update: {
+          erstellt_am?: string
+          geaendert_am?: string
+          id?: string
+          mieter_name?: string | null
+          name?: string
+          notizen?: string | null
+          nutzung?: Database["public"]["Enums"]["einheit_nutzung"]
+          property_id?: string
+          wohnflaeche?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "einheiten_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       einnahmen: {
         Row: {
           betrag: number
           bezeichnung: string
           datum: string
+          einheit_id: string | null
           erstellt_am: string
           id: string
           notizen: string | null
-          project_id: string
+          project_id: string | null
+          property_id: string
         }
         Insert: {
           betrag: number
           bezeichnung: string
           datum?: string
+          einheit_id?: string | null
           erstellt_am?: string
           id?: string
           notizen?: string | null
-          project_id: string
+          project_id?: string | null
+          property_id: string
         }
         Update: {
           betrag?: number
           bezeichnung?: string
           datum?: string
+          einheit_id?: string | null
           erstellt_am?: string
           id?: string
           notizen?: string | null
-          project_id?: string
+          project_id?: string | null
+          property_id?: string
         }
         Relationships: [
           {
@@ -229,6 +285,72 @@ export type Database = {
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      laufende_posten: {
+        Row: {
+          art: Database["public"]["Enums"]["posten_art"]
+          betrag: number
+          bezeichnung: string
+          einheit_id: string | null
+          erstellt_am: string
+          geaendert_am: string
+          gilt_ab: string
+          gilt_bis: string | null
+          id: string
+          kategorie: Database["public"]["Enums"]["laufend_kategorie"]
+          notizen: string | null
+          property_id: string
+          turnus: Database["public"]["Enums"]["turnus"]
+          umlagefaehig: boolean
+        }
+        Insert: {
+          art: Database["public"]["Enums"]["posten_art"]
+          betrag: number
+          bezeichnung: string
+          einheit_id?: string | null
+          erstellt_am?: string
+          geaendert_am?: string
+          gilt_ab?: string
+          gilt_bis?: string | null
+          id?: string
+          kategorie: Database["public"]["Enums"]["laufend_kategorie"]
+          notizen?: string | null
+          property_id: string
+          turnus?: Database["public"]["Enums"]["turnus"]
+          umlagefaehig?: boolean
+        }
+        Update: {
+          art?: Database["public"]["Enums"]["posten_art"]
+          betrag?: number
+          bezeichnung?: string
+          einheit_id?: string | null
+          erstellt_am?: string
+          geaendert_am?: string
+          gilt_ab?: string
+          gilt_bis?: string | null
+          id?: string
+          kategorie?: Database["public"]["Enums"]["laufend_kategorie"]
+          notizen?: string | null
+          property_id?: string
+          turnus?: Database["public"]["Enums"]["turnus"]
+          umlagefaehig?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "laufende_posten_einheit_id_fkey"
+            columns: ["einheit_id"]
+            isOneToOne: false
+            referencedRelation: "einheiten"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "laufende_posten_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
             referencedColumns: ["id"]
           },
         ]
@@ -540,6 +662,7 @@ export type Database = {
         | "honorar"
         | "versicherung"
         | "sonstiges"
+      einheit_nutzung: "eigengenutzt" | "vermietet" | "leerstand"
       freigabestufe: "angefragt" | "im_gespraech" | "beauftragt"
       gebaeude_typ:
         | "einfamilienhaus"
@@ -549,8 +672,37 @@ export type Database = {
         | "eigentumswohnung"
         | "sonstiges"
       immobilie_status: "in_planung" | "aktiv" | "archiviert"
+      laufend_kategorie:
+        | "miete"
+        | "nebenkosten_vorauszahlung"
+        | "sonstige_einnahme"
+        | "grundsteuer"
+        | "versicherung"
+        | "heizung_energie"
+        | "wasser_abwasser"
+        | "muellabfuhr"
+        | "strassenreinigung"
+        | "schornsteinfeger"
+        | "hausreinigung"
+        | "gartenpflege"
+        | "allgemeinstrom"
+        | "aufzug"
+        | "kabel_internet"
+        | "verwaltung"
+        | "instandhaltung"
+        | "ruecklage"
+        | "darlehen_zins"
+        | "darlehen_tilgung"
+        | "sonstige_ausgabe"
+      posten_art: "einnahme" | "ausgabe"
       projekt_status: "geplant" | "laufend" | "abgeschlossen" | "verworfen"
       tagebuch_zustand: "erfasst" | "kein_einsatz"
+      turnus:
+        | "monatlich"
+        | "quartalsweise"
+        | "halbjaehrlich"
+        | "jaehrlich"
+        | "einmalig"
       vergabe_status: "offen" | "vergeben" | "verworfen"
       vertragsart: "bgb" | "vob"
     }

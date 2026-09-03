@@ -22,10 +22,22 @@ export async function createAusgabe(input: {
   }
 
   const supabase = await createClient();
+
+  // Jede Ausgabe haengt an einer Immobilie — die Zuordnung kommt hier aus dem Projekt.
+  const { data: projekt } = await supabase
+    .from("projects")
+    .select("property_id")
+    .eq("id", input.projectId)
+    .maybeSingle();
+  if (!projekt) {
+    return { status: "error", message: "Das Projekt wurde nicht gefunden." };
+  }
+
   const { data, error } = await supabase
     .from("ausgaben")
     .insert({
       project_id: input.projectId,
+      property_id: projekt.property_id,
       bezeichnung,
       betrag,
       kategorie: input.kategorie,

@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Field, Input, Select } from "@/components/ui/Field";
 import { gebaeudeTypLabel, immobilieStatusLabel } from "@/lib/labels";
 import type { Enums, Tables } from "@/lib/supabase/database.types";
-import { updateProperty } from "./actions";
+import { updateProperty } from "./actions/immobilie";
 
 export function EditPropertyForm({ property }: { property: Tables<"properties"> }) {
   const router = useRouter();

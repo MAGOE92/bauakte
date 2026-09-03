@@ -165,3 +165,51 @@ body {
   background: var(--bk-terracotta-soft);
   color: var(--bk-ink);
 }
+
+/* ---------------------------------------------------------------------------
+   Druck. Genutzt fuer die Nebenkostenabrechnung: der Browser erzeugt daraus
+   das PDF, deshalb muss die Seite ohne Navigation und in klarem Schwarz auf
+   Weiss stehen — unabhaengig vom gewaehlten Farbschema.
+   --------------------------------------------------------------------------- */
+@media print {
+  [data-drucken="aus"] {
+    display: none !important;
+  }
+
+  :root,
+  :root[data-theme="dark"] {
+    --bk-canvas: #ffffff;
+    --bk-surface: #ffffff;
+    --bk-sunken: #ffffff;
+    --bk-line: #999999;
+    --bk-line-strong: #666666;
+    --bk-ink: #000000;
+    --bk-ink-soft: #444444;
+    --bk-shadow-card: none;
+    color-scheme: light;
+  }
+
+  body {
+    background: #ffffff;
+  }
+
+  main {
+    padding: 0 !important;
+  }
+
+  .shadow-card {
+    box-shadow: none !important;
+  }
+
+  table {
+    break-inside: auto;
+  }
+
+  tr {
+    break-inside: avoid;
+  }
+
+  @page {
+    margin: 18mm 16mm;
+  }
+}

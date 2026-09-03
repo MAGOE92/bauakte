@@ -8,6 +8,24 @@ export function formatCurrency(value: number) {
   return currencyFormatter.format(value);
 }
 
+const flaecheFormatter = new Intl.NumberFormat("de-DE", {
+  maximumFractionDigits: 2,
+});
+
+export function formatFlaeche(value: number | null | undefined) {
+  if (value === null || value === undefined) return "–";
+  return `${flaecheFormatter.format(value)} m²`;
+}
+
+const prozentFormatter = new Intl.NumberFormat("de-DE", {
+  minimumFractionDigits: 1,
+  maximumFractionDigits: 1,
+});
+
+export function formatProzent(value: number) {
+  return `${prozentFormatter.format(value)} %`;
+}
+
 export function formatDate(value: string | null | undefined) {
   if (!value) return "–";
   const date = new Date(value);

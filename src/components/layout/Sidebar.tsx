@@ -17,7 +17,10 @@ export function Sidebar({ email }: { email: string }) {
   const pathname = usePathname();
 
   return (
-    <aside className="flex h-screen w-64 shrink-0 flex-col bg-navy px-4 py-6 text-white">
+    <aside
+      data-drucken="aus"
+      className="flex h-screen w-64 shrink-0 flex-col bg-navy px-4 py-6 text-white"
+    >
       <div className="flex items-center gap-3 px-2">
         <span className="flex h-10 w-10 items-center justify-center rounded-full bg-terracotta font-display text-lg font-extrabold">
           B

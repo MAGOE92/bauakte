@@ -20,10 +20,22 @@ export async function createEinnahme(input: {
   }
 
   const supabase = await createClient();
+
+  // Jede Einnahme haengt an einer Immobilie — die Zuordnung kommt hier aus dem Projekt.
+  const { data: projekt } = await supabase
+    .from("projects")
+    .select("property_id")
+    .eq("id", input.projectId)
+    .maybeSingle();
+  if (!projekt) {
+    return { status: "error", message: "Das Projekt wurde nicht gefunden." };
+  }
+
   const { data, error } = await supabase
     .from("einnahmen")
     .insert({
       project_id: input.projectId,
+      property_id: projekt.property_id,
       bezeichnung,
       betrag,
       datum: input.datum || new Date().toISOString().slice(0, 10),
