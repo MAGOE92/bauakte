@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Pencil, X } from "lucide-react";
-import { Card } from "@/components/ui/Card";
+import { Pencil } from "lucide-react";
+import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
 import { Field, Input, Select } from "@/components/ui/Field";
 import { gebaeudeTypLabel, immobilieStatusLabel } from "@/lib/labels";
@@ -49,13 +49,7 @@ export function EditPropertyForm({ property }: { property: Tables<"properties"> 
   }
 
   return (
-    <Card className="mb-8">
-      <div className="mb-4 flex items-center justify-between">
-        <p className="font-display text-lg font-bold text-ink">Immobilie bearbeiten</p>
-        <button type="button" onClick={() => setOpen(false)} className="text-ink-soft hover:text-ink">
-          <X className="h-5 w-5" />
-        </button>
-      </div>
+    <Modal title="Immobilie bearbeiten" onClose={() => setOpen(false)}>
       <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Field label="Name" htmlFor="edit-prop-name">
           <Input id="edit-prop-name" required value={name} onChange={(e) => setName(e.target.value)} />
@@ -90,6 +84,6 @@ export function EditPropertyForm({ property }: { property: Tables<"properties"> 
           </Button>
         </div>
       </form>
-    </Card>
+    </Modal>
   );
 }

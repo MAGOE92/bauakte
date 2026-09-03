@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Pencil, X } from "lucide-react";
-import { Card } from "@/components/ui/Card";
+import { Pencil } from "lucide-react";
+import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
 import { Field, Input, Select, Textarea } from "@/components/ui/Field";
 import { projektStatusLabel } from "@/lib/labels";
@@ -60,13 +60,7 @@ export function EditProjectForm({ project }: { project: Tables<"projects"> }) {
   }
 
   return (
-    <Card className="mb-8">
-      <div className="mb-4 flex items-center justify-between">
-        <p className="font-display text-lg font-bold text-ink">Projekt bearbeiten</p>
-        <button type="button" onClick={() => setOpen(false)} className="text-ink-soft hover:text-ink">
-          <X className="h-5 w-5" />
-        </button>
-      </div>
+    <Modal title="Projekt bearbeiten" onClose={() => setOpen(false)}>
       <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Field label="Name" htmlFor="edit-proj-name">
           <Input id="edit-proj-name" required value={name} onChange={(e) => setName(e.target.value)} />
@@ -106,6 +100,6 @@ export function EditProjectForm({ project }: { project: Tables<"projects"> }) {
           </Button>
         </div>
       </form>
-    </Card>
+    </Modal>
   );
 }

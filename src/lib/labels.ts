@@ -76,7 +76,9 @@ export const vertragsartLabel: Record<Enums<"vertragsart">, string> = {
 export const ausgabeKategorieLabel: Record<Enums<"ausgabe_kategorie">, string> = {
   handwerker: "Handwerker",
   material: "Material",
-  miete: "Miete",
+  // Gerätemiete (Bagger, Gerüst, Mietfahrzeug) — nicht zu verwechseln mit der
+  // Kaltmiete eines Mieters, die als laufender Posten an der Immobilie liegt.
+  miete: "Gerätemiete",
   gebuehr: "Gebühr",
   honorar: "Honorar",
   versicherung: "Versicherung",
