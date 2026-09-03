@@ -267,6 +267,13 @@ function PostenFormular({
   const [pending, setPending] = useState(false);
 
   const idPrefix = posten ? `posten-${posten.id}` : "posten-neu";
+  const einmalig = turnus === "einmalig";
+
+  /** Einmaliges kennt kein Enddatum — sonst bliebe ein alter Wert stehen. */
+  function wechsleTurnus(neuerTurnus: Enums<"turnus">) {
+    setTurnus(neuerTurnus);
+    if (neuerTurnus === "einmalig") setGiltBis("");
+  }
 
   /** Beim Wechsel der Art passt die Kategorie nicht mehr — also mitziehen. */
   function wechsleArt(neueArt: Enums<"posten_art">) {
@@ -356,7 +363,11 @@ function PostenFormular({
           />
         </Field>
 
-        <Field label="Betrag" htmlFor={`${idPrefix}-betrag`} hint="In Euro, pro Turnus">
+        <Field
+          label="Betrag"
+          htmlFor={`${idPrefix}-betrag`}
+          hint={einmalig ? "In Euro" : "In Euro, pro Turnus"}
+        >
           <Input
             id={`${idPrefix}-betrag`}
             type="number"
@@ -373,7 +384,7 @@ function PostenFormular({
           <Select
             id={`${idPrefix}-turnus`}
             value={turnus}
-            onChange={(e) => setTurnus(e.target.value as Enums<"turnus">)}
+            onChange={(e) => wechsleTurnus(e.target.value as Enums<"turnus">)}
           >
             {Object.entries(turnusLabel).map(([wert, beschriftung]) => (
               <option key={wert} value={wert}>
@@ -402,8 +413,13 @@ function PostenFormular({
           </Select>
         </Field>
 
-        <div className="grid grid-cols-2 gap-4">
-          <Field label="Ab" htmlFor={`${idPrefix}-ab`}>
+        {/* Einmaliges hat keinen Zeitraum, sondern genau einen Stichtag. */}
+        <div className={einmalig ? "" : "grid grid-cols-2 gap-4"}>
+          <Field
+            label={einmalig ? "Datum" : "Ab"}
+            htmlFor={`${idPrefix}-ab`}
+            hint={einmalig ? "Tag, an dem die Zahlung anfällt" : undefined}
+          >
             <Input
               id={`${idPrefix}-ab`}
               type="date"
@@ -412,14 +428,16 @@ function PostenFormular({
               onChange={(e) => setGiltAb(e.target.value)}
             />
           </Field>
-          <Field label="Bis" htmlFor={`${idPrefix}-bis`} hint="Optional">
-            <Input
-              id={`${idPrefix}-bis`}
-              type="date"
-              value={giltBis}
-              onChange={(e) => setGiltBis(e.target.value)}
-            />
-          </Field>
+          {!einmalig && (
+            <Field label="Bis" htmlFor={`${idPrefix}-bis`} hint="Optional">
+              <Input
+                id={`${idPrefix}-bis`}
+                type="date"
+                value={giltBis}
+                onChange={(e) => setGiltBis(e.target.value)}
+              />
+            </Field>
+          )}
         </div>
 
         {art === "ausgabe" && (
