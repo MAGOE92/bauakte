@@ -15,30 +15,36 @@ export type Database = {
       angebote: {
         Row: {
           betrag: number
+          direkt_von_firma: boolean
           dokument_id: string | null
           eingereicht_am: string
           firma_id: string
           id: string
+          notiz: string | null
           project_id: string
           status: Database["public"]["Enums"]["angebot_status"]
           vergabe_id: string | null
         }
         Insert: {
           betrag: number
+          direkt_von_firma?: boolean
           dokument_id?: string | null
           eingereicht_am?: string
           firma_id: string
           id?: string
+          notiz?: string | null
           project_id: string
           status?: Database["public"]["Enums"]["angebot_status"]
           vergabe_id?: string | null
         }
         Update: {
           betrag?: number
+          direkt_von_firma?: boolean
           dokument_id?: string | null
           eingereicht_am?: string
           firma_id?: string
           id?: string
+          notiz?: string | null
           project_id?: string
           status?: Database["public"]["Enums"]["angebot_status"]
           vergabe_id?: string | null
@@ -699,6 +705,7 @@ export type Database = {
           project_id: string
           status: Database["public"]["Enums"]["vergabe_status"]
           titel: string
+          token: string
         }
         Insert: {
           beschreibung?: string | null
@@ -709,6 +716,7 @@ export type Database = {
           project_id: string
           status?: Database["public"]["Enums"]["vergabe_status"]
           titel: string
+          token?: string
         }
         Update: {
           beschreibung?: string | null
@@ -719,6 +727,7 @@ export type Database = {
           project_id?: string
           status?: Database["public"]["Enums"]["vergabe_status"]
           titel?: string
+          token?: string
         }
         Relationships: [
           {
@@ -735,7 +744,23 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      angebot_per_link_einreichen: {
+        Args: {
+          p_ansprechpartner: string
+          p_betrag: number
+          p_email: string
+          p_firmenname: string
+          p_notiz: string
+          p_telefon: string
+          p_token: string
+        }
+        Returns: Json
+      }
       freigabe_by_token: {
+        Args: { p_token: string }
+        Returns: Json
+      }
+      vergabe_by_token: {
         Args: { p_token: string }
         Returns: Json
       }

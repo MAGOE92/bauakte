@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Check, X as XIcon, Plus, Ban, Trash2 } from "lucide-react";
+import { Check, X as XIcon, Plus, Ban, Trash2, Link2, HardHat } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -38,6 +38,7 @@ export function VergabeCard({
         </div>
         <div className="flex items-center gap-2">
           <Badge tone={vergabeStatusTone[vergabe.status]}>{vergabeStatusLabel[vergabe.status]}</Badge>
+          {vergabe.status === "offen" && <LinkKopierenButton token={vergabe.token} />}
           {vergabe.status === "offen" && <VerwerfenButton vergabeId={vergabe.id} projectId={projectId} />}
         </div>
       </div>
@@ -46,6 +47,12 @@ export function VergabeCard({
       {vergabe.bewerbungsfrist && (
         <p className="mt-2 text-xs font-semibold text-ink-soft">
           Bewerbungsfrist: {formatDate(vergabe.bewerbungsfrist)}
+        </p>
+      )}
+      {vergabe.status === "offen" && (
+        <p className="mt-2 flex items-center gap-1.5 text-xs text-ink-soft">
+          <HardHat className="h-3.5 w-3.5 shrink-0" />
+          Handwerker können über den Link direkt ein Angebot abgeben — ohne Login.
         </p>
       )}
 
@@ -61,6 +68,27 @@ export function VergabeCard({
         <NewAngebotForm projectId={projectId} vergabeId={vergabe.id} firmen={firmen} />
       </div>
     </Card>
+  );
+}
+
+function LinkKopierenButton({ token }: { token: string }) {
+  const [copied, setCopied] = useState(false);
+
+  async function handleClick() {
+    const url = `${window.location.origin}/ausschreibung/${token}`;
+    await navigator.clipboard.writeText(url);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
+
+  return (
+    <button
+      onClick={handleClick}
+      title="Ausschreibungs-Link kopieren"
+      className="flex h-7 w-7 items-center justify-center rounded-full text-ink-soft transition-colors hover:bg-sunken hover:text-terracotta"
+    >
+      {copied ? <Check className="h-3.5 w-3.5 text-success" /> : <Link2 className="h-3.5 w-3.5" />}
+    </button>
   );
 }
 
@@ -125,8 +153,20 @@ function AngebotRow({
   return (
     <div className="flex flex-wrap items-center gap-3 rounded-xl bg-sunken px-4 py-3">
       <div className="min-w-0 flex-1">
-        <p className="text-sm font-semibold text-ink">{firma?.name ?? "Unbekannte Firma"}</p>
+        <p className="flex flex-wrap items-center gap-1.5 text-sm font-semibold text-ink">
+          {firma?.name ?? "Unbekannte Firma"}
+          {angebot.direkt_von_firma && (
+            <span
+              title="Direkt von der Firma über den Ausschreibungs-Link eingereicht"
+              className="inline-flex items-center gap-1 rounded-full bg-terracotta-soft px-2 py-0.5 text-[11px] font-bold text-terracotta-hover"
+            >
+              <HardHat className="h-3 w-3" strokeWidth={2.5} />
+              über Plattform
+            </span>
+          )}
+        </p>
         <p className="text-xs text-ink-soft">{formatCurrency(angebot.betrag)}</p>
+        {angebot.notiz && <p className="mt-1 text-xs text-ink-soft">{angebot.notiz}</p>}
       </div>
       <Badge tone={angebotStatusTone[angebot.status]}>{angebotStatusLabel[angebot.status]}</Badge>
       <div className="flex gap-2">
