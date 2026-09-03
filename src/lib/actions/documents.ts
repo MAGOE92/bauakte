@@ -7,6 +7,7 @@ import type { ActionResult } from "@/lib/actions/types";
 export async function createDocument(input: {
   propertyId: string;
   projectId?: string | null;
+  ordnerId?: string | null;
   name: string;
   kategorie: string;
   storagePfad: string;
@@ -25,6 +26,7 @@ export async function createDocument(input: {
     .insert({
       property_id: input.propertyId,
       project_id: input.projectId ?? null,
+      ordner_id: input.ordnerId ?? null,
       name: input.name,
       kategorie: input.kategorie,
       datei_typ: input.dateiTyp,

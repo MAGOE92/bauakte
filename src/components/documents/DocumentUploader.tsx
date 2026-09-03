@@ -12,11 +12,14 @@ import { createDocument } from "@/lib/actions/documents";
 export function DocumentUploader({
   propertyId,
   projectId,
+  ordnerId,
   categories,
   revalidate,
 }: {
   propertyId: string;
   projectId?: string | null;
+  /** Zielordner — die Datei landet dort, wo der Nutzer gerade steht. */
+  ordnerId?: string | null;
   categories: readonly string[];
   revalidate: string;
 }) {
@@ -53,6 +56,7 @@ export function DocumentUploader({
     const result = await createDocument({
       propertyId,
       projectId,
+      ordnerId,
       name: file.name,
       kategorie: category,
       storagePfad: path,

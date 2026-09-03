@@ -156,6 +156,7 @@ export type Database = {
           id: string
           kategorie: string
           name: string
+          ordner_id: string | null
           project_id: string | null
           property_id: string
           storage_pfad: string
@@ -168,6 +169,7 @@ export type Database = {
           id?: string
           kategorie: string
           name: string
+          ordner_id?: string | null
           project_id?: string | null
           property_id: string
           storage_pfad: string
@@ -180,11 +182,19 @@ export type Database = {
           id?: string
           kategorie?: string
           name?: string
+          ordner_id?: string | null
           project_id?: string | null
           property_id?: string
           storage_pfad?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "documents_ordner_id_fkey"
+            columns: ["ordner_id"]
+            isOneToOne: false
+            referencedRelation: "ordner"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "documents_project_id_fkey"
             columns: ["project_id"]
@@ -390,6 +400,85 @@ export type Database = {
           telefon?: string | null
         }
         Relationships: []
+      }
+      freigabe_dokumente: {
+        Row: {
+          document_id: string
+          freigabe_id: string
+        }
+        Insert: {
+          document_id: string
+          freigabe_id: string
+        }
+        Update: {
+          document_id?: string
+          freigabe_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "freigabe_dokumente_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "freigabe_dokumente_freigabe_id_fkey"
+            columns: ["freigabe_id"]
+            isOneToOne: false
+            referencedRelation: "freigaben"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ordner: {
+        Row: {
+          erstellt_am: string
+          id: string
+          name: string
+          parent_id: string | null
+          project_id: string | null
+          property_id: string
+        }
+        Insert: {
+          erstellt_am?: string
+          id?: string
+          name: string
+          parent_id?: string | null
+          project_id?: string | null
+          property_id: string
+        }
+        Update: {
+          erstellt_am?: string
+          id?: string
+          name?: string
+          parent_id?: string | null
+          project_id?: string | null
+          property_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ordner_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "ordner"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ordner_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ordner_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       freigaben: {
         Row: {
