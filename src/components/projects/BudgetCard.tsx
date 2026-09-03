@@ -1,4 +1,3 @@
-import { Card } from "@/components/ui/Card";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { formatCurrency } from "@/lib/format";
 import type { BudgetSummary } from "@/lib/budget";
@@ -7,7 +6,11 @@ export function BudgetCard({ summary }: { summary: BudgetSummary }) {
   const ueberzogen = summary.nichtVerplant < 0;
 
   return (
-    <Card className="mb-8">
+    // Eigens statt der generischen Card: die wichtigste Zahl im Projekt soll
+    // nicht optisch gleich wiegen wie eine Karte, die nur eine leere Tabelle
+    // umschliesst — deshalb der Akzentstreifen oben.
+    <div className="relative mb-8 overflow-hidden rounded-2xl border border-line bg-surface shadow-card p-6">
+      <div className="absolute inset-x-0 top-0 h-1 bg-terracotta" />
       <div className="flex flex-wrap items-end justify-between gap-2">
         <div>
           <p className="font-display text-xs font-bold uppercase tracking-[0.1em] text-ink-soft">
@@ -40,7 +43,7 @@ export function BudgetCard({ summary }: { summary: BudgetSummary }) {
         />
         <BudgetStat label="Einnahmen" value={summary.einnahmen} />
       </div>
-    </Card>
+    </div>
   );
 }
 

@@ -84,10 +84,19 @@ function LinkKopierenButton({ token }: { token: string }) {
   return (
     <button
       onClick={handleClick}
-      title="Ausschreibungs-Link kopieren"
-      className="flex h-7 w-7 items-center justify-center rounded-full text-ink-soft transition-colors hover:bg-sunken hover:text-terracotta"
+      className="flex h-7 items-center gap-1.5 rounded-full px-2.5 text-xs font-bold text-ink-soft transition-colors hover:bg-sunken hover:text-terracotta"
     >
-      {copied ? <Check className="h-3.5 w-3.5 text-success" /> : <Link2 className="h-3.5 w-3.5" />}
+      {copied ? (
+        <>
+          <Check className="h-3.5 w-3.5 text-success" />
+          Kopiert
+        </>
+      ) : (
+        <>
+          <Link2 className="h-3.5 w-3.5" />
+          Link kopieren
+        </>
+      )}
     </button>
   );
 }

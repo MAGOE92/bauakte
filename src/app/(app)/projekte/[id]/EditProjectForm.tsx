@@ -51,10 +51,10 @@ export function EditProjectForm({ project }: { project: Tables<"projects"> }) {
     return (
       <button
         onClick={() => setOpen(true)}
-        title="Projekt bearbeiten"
-        className="flex h-9 w-9 items-center justify-center rounded-full border border-line text-ink-soft transition-colors hover:border-terracotta hover:text-terracotta"
+        className="flex h-9 items-center gap-1.5 rounded-full border border-line px-3.5 text-sm font-semibold text-ink-soft transition-colors hover:border-terracotta hover:text-terracotta"
       >
-        <Pencil className="h-4 w-4" strokeWidth={2.25} />
+        <Pencil className="h-3.5 w-3.5" strokeWidth={2.25} />
+        Bearbeiten
       </button>
     );
   }
