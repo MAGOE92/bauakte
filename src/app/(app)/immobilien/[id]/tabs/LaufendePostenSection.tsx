@@ -112,7 +112,10 @@ function PostenTabelle({
   return (
     <div>
       <h3 className="font-display mb-3 text-base font-bold text-ink">{titel}</h3>
-      <div className="overflow-x-auto rounded-2xl border border-line bg-surface shadow-card">
+
+      {/* Ab sm eine Tabelle; auf dem Handy dieselben Zeilen als Karten, sonst
+          laeuft die 720px breite Tabelle seitlich aus dem Bildschirm. */}
+      <div className="hidden overflow-x-auto rounded-2xl border border-line bg-surface shadow-card sm:block">
         <table className="w-full min-w-[720px] text-left text-sm">
           <thead>
             <tr className="border-b border-line text-xs font-semibold uppercase tracking-wide text-ink-soft">
@@ -136,8 +139,36 @@ function PostenTabelle({
           </tbody>
         </table>
       </div>
+
+      <div className="flex flex-col gap-3 sm:hidden">
+        {posten.map((p) => (
+          <PostenKarte key={p.id} posten={p} propertyId={propertyId} einheiten={einheiten} />
+        ))}
+      </div>
     </div>
   );
+}
+
+function usePostenAktionen(posten: Posten, propertyId: string) {
+  const router = useRouter();
+  const [bearbeiten, setBearbeiten] = useState(false);
+  const [pending, setPending] = useState(false);
+
+  async function loeschen() {
+    if (!confirm(`„${posten.bezeichnung}" wirklich löschen?`)) return;
+    setPending(true);
+    await deleteLaufendenPosten(posten.id, propertyId);
+    setPending(false);
+    router.refresh();
+  }
+
+  return { bearbeiten, setBearbeiten, pending, loeschen };
+}
+
+function einheitNameVon(posten: Posten, einheiten: EinheitOption[]) {
+  return posten.einheit_id
+    ? (einheiten.find((e) => e.id === posten.einheit_id)?.name ?? "Gelöschte Einheit")
+    : "Ganze Immobilie";
 }
 
 function PostenZeile({
@@ -149,21 +180,8 @@ function PostenZeile({
   propertyId: string;
   einheiten: EinheitOption[];
 }) {
-  const router = useRouter();
-  const [bearbeiten, setBearbeiten] = useState(false);
-  const [pending, setPending] = useState(false);
-
-  const einheitName = posten.einheit_id
-    ? (einheiten.find((e) => e.id === posten.einheit_id)?.name ?? "Gelöschte Einheit")
-    : "Ganze Immobilie";
-
-  async function loeschen() {
-    if (!confirm(`„${posten.bezeichnung}" wirklich löschen?`)) return;
-    setPending(true);
-    await deleteLaufendenPosten(posten.id, propertyId);
-    setPending(false);
-    router.refresh();
-  }
+  const { bearbeiten, setBearbeiten, pending, loeschen } = usePostenAktionen(posten, propertyId);
+  const einheitName = einheitNameVon(posten, einheiten);
 
   if (bearbeiten) {
     return (
@@ -228,6 +246,85 @@ function PostenZeile({
         </div>
       </td>
     </tr>
+  );
+}
+
+function PostenKarte({
+  posten,
+  propertyId,
+  einheiten,
+}: {
+  posten: Posten;
+  propertyId: string;
+  einheiten: EinheitOption[];
+}) {
+  const { bearbeiten, setBearbeiten, pending, loeschen } = usePostenAktionen(posten, propertyId);
+  const einheitName = einheitNameVon(posten, einheiten);
+
+  if (bearbeiten) {
+    return (
+      <PostenFormular
+        titel="Posten bearbeiten"
+        propertyId={propertyId}
+        einheiten={einheiten}
+        posten={posten}
+        onSpeichern={(eingabe) => updateLaufendenPosten(posten.id, eingabe)}
+        onAbbrechen={() => setBearbeiten(false)}
+        onFertig={() => setBearbeiten(false)}
+      />
+    );
+  }
+
+  return (
+    <div className="rounded-2xl border border-line bg-surface shadow-card p-4">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="truncate font-semibold text-ink">{posten.bezeichnung}</p>
+          <p className="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-ink-soft">
+            <span>{laufendKategorieLabel[posten.kategorie]}</span>
+            {posten.umlagefaehig && (
+              <Badge tone="info" className="px-2 py-0.5 text-[11px]">
+                umlagefähig
+              </Badge>
+            )}
+          </p>
+        </div>
+        <div className="flex shrink-0 gap-1">
+          <button
+            onClick={() => setBearbeiten(true)}
+            title="Bearbeiten"
+            className="text-ink-soft transition-colors hover:text-terracotta"
+          >
+            <Pencil className="h-4 w-4" />
+          </button>
+          <button
+            onClick={loeschen}
+            disabled={pending}
+            title="Löschen"
+            className="text-ink-soft transition-colors hover:text-danger"
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+
+      <div className="mt-3 flex items-end justify-between gap-3">
+        <div>
+          <p className="font-display text-lg font-bold text-ink">{formatCurrency(posten.betrag)}</p>
+          <p className="text-xs text-ink-soft">{turnusLabel[posten.turnus]}</p>
+        </div>
+        <div className="text-right text-xs text-ink-soft">
+          <p>{einheitName}</p>
+          <p>
+            {formatDate(posten.gilt_ab)}
+            {posten.gilt_bis ? ` – ${formatDate(posten.gilt_bis)}` : ""}
+          </p>
+          {posten.turnus !== "einmalig" && (
+            <p>{formatCurrency(jahresbetrag(posten.betrag, posten.turnus))} / Jahr</p>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
 

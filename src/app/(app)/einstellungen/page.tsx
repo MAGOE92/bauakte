@@ -1,8 +1,11 @@
 import { createClient } from "@/lib/supabase/server";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Card } from "@/components/ui/Card";
-import { ShieldCheck, Link2 } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import { ShieldCheck, Link2, LogOut } from "lucide-react";
 import { ProfileForm } from "./ProfileForm";
+import { ThemeToggle } from "@/components/layout/ThemeToggle";
+import { signOut } from "@/app/login/actions";
 
 export default async function EinstellungenPage() {
   const supabase = await createClient();
@@ -18,6 +21,25 @@ export default async function EinstellungenPage() {
 
       <div className="flex flex-col gap-6">
         <ProfileForm initialName={initialName} email={user?.email ?? ""} />
+
+        <Card className="max-w-lg">
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <p className="font-display text-sm font-bold text-ink">Angemeldet als</p>
+              <p className="truncate text-sm text-ink-soft">{user?.email}</p>
+            </div>
+            <form action={signOut}>
+              <Button type="submit" variant="secondary" size="sm" className="shrink-0">
+                <LogOut className="h-4 w-4" strokeWidth={2.25} />
+                Abmelden
+              </Button>
+            </form>
+          </div>
+          <div className="mt-4 border-t border-line pt-4">
+            <p className="mb-2 text-xs font-semibold text-ink-soft">Darstellung</p>
+            <ThemeToggle variant="hell" />
+          </div>
+        </Card>
 
         <Card className="max-w-lg">
           <div className="mb-2 flex items-center gap-2">

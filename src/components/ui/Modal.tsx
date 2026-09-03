@@ -31,7 +31,9 @@ export function Modal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-navy/50 px-4 py-10"
+      // Auf dem Handy ein Sheet vom unteren Rand — die Daumenzone. Ab sm eine
+      // klassisch zentrierte Karte.
+      className="fixed inset-0 z-50 flex items-end justify-center overflow-y-auto bg-navy/50 sm:items-start sm:px-4 sm:py-10"
       onClick={onClose}
     >
       <div
@@ -40,7 +42,7 @@ export function Modal({
         aria-label={title}
         onClick={(e) => e.stopPropagation()}
         className={cn(
-          "w-full max-w-xl rounded-2xl border border-line bg-surface shadow-card p-6",
+          "max-h-[90vh] w-full overflow-y-auto rounded-t-2xl border border-line bg-surface shadow-card p-6 sm:max-w-xl sm:rounded-2xl",
           className
         )}
       >

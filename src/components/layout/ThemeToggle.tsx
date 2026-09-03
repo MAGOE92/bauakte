@@ -61,11 +61,21 @@ function setzeSchema(schema: Farbschema) {
   window.dispatchEvent(new Event(EREIGNIS));
 }
 
-export function ThemeToggle() {
+/**
+ * `dunkel` passt zur immer-dunklen Sidebar (unabhaengig vom Farbschema),
+ * `hell` zu einer normalen Karte auf hellem Grund — z. B. in den
+ * Einstellungen, wo der Toggle auch auf dem Handy erreichbar sein muss.
+ */
+export function ThemeToggle({ variant = "dunkel" }: { variant?: "dunkel" | "hell" }) {
   const schema = useSyncExternalStore(abonniere, leseSchema, leseSchemaAufServer);
+  const istDunkel = variant === "dunkel";
 
   return (
-    <div className="flex gap-1 rounded-full bg-white/10 p-1" role="group" aria-label="Farbschema">
+    <div
+      className={`flex gap-1 rounded-full p-1 ${istDunkel ? "bg-white/10" : "bg-sunken"}`}
+      role="group"
+      aria-label="Farbschema"
+    >
       {OPTIONEN.map(({ wert, label, Icon }) => {
         const aktiv = schema === wert;
         return (
@@ -77,7 +87,11 @@ export function ThemeToggle() {
             aria-label={label}
             aria-pressed={aktiv}
             className={`flex flex-1 items-center justify-center rounded-full py-1.5 transition-colors ${
-              aktiv ? "bg-terracotta text-white" : "text-white/60 hover:text-white"
+              aktiv
+                ? "bg-terracotta text-white"
+                : istDunkel
+                  ? "text-white/60 hover:text-white"
+                  : "text-ink-soft hover:text-ink"
             }`}
           >
             <Icon className="h-4 w-4" strokeWidth={2.25} />

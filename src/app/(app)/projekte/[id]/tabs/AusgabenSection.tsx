@@ -32,42 +32,52 @@ export function AusgabenSection({
       {!ausgaben.length ? (
         <EmptyState title="Noch keine Ausgaben erfasst" description="Erfasse Rechnungen und Kosten für dieses Projekt." />
       ) : (
-        <div className="overflow-x-auto rounded-2xl border border-line bg-surface shadow-card">
-          <table className="w-full min-w-[640px] text-left text-sm">
-            <thead>
-              <tr className="border-b border-line text-xs font-semibold uppercase tracking-wide text-ink-soft">
-                <th className="px-5 py-3">Bezeichnung</th>
-                <th className="px-5 py-3">Kategorie</th>
-                <th className="px-5 py-3">Fällig</th>
-                <th className="px-5 py-3 text-right">Betrag</th>
-                <th className="px-5 py-3">Status</th>
-                <th className="px-5 py-3" />
-              </tr>
-            </thead>
-            <tbody>
-              {ausgaben.map((a) => (
-                <AusgabeRow key={a.id} ausgabe={a} projectId={projectId} />
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <>
+          {/* Ab sm eine Tabelle; auf dem Handy laeuft eine breite Tabelle seitlich
+              aus dem Bildschirm, deshalb darunter dieselben Zeilen als Karten. */}
+          <div className="hidden overflow-x-auto rounded-2xl border border-line bg-surface shadow-card sm:block">
+            <table className="w-full min-w-[640px] text-left text-sm">
+              <thead>
+                <tr className="border-b border-line text-xs font-semibold uppercase tracking-wide text-ink-soft">
+                  <th className="px-5 py-3">Bezeichnung</th>
+                  <th className="px-5 py-3">Kategorie</th>
+                  <th className="px-5 py-3">Fällig</th>
+                  <th className="px-5 py-3 text-right">Betrag</th>
+                  <th className="px-5 py-3">Status</th>
+                  <th className="px-5 py-3" />
+                </tr>
+              </thead>
+              <tbody>
+                {ausgaben.map((a) => (
+                  <AusgabeZeile key={a.id} ausgabe={a} projectId={projectId} />
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="flex flex-col gap-3 sm:hidden">
+            {ausgaben.map((a) => (
+              <AusgabeKarte key={a.id} ausgabe={a} projectId={projectId} />
+            ))}
+          </div>
+        </>
       )}
     </div>
   );
 }
 
-function AusgabeRow({ ausgabe, projectId }: { ausgabe: Tables<"ausgaben">; projectId: string }) {
+function useAusgabeAktionen(ausgabe: Tables<"ausgaben">, projectId: string) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
 
-  async function handleToggle() {
+  async function toggleBezahlt() {
     setPending(true);
     await toggleAusgabeBezahlt(ausgabe.id, projectId, !ausgabe.bezahlt);
     setPending(false);
     router.refresh();
   }
 
-  async function handleDatum(datum: string) {
+  async function setDatum(datum: string) {
     if (!datum) return;
     setPending(true);
     await setzeBezahltAm(ausgabe.id, projectId, datum);
@@ -75,13 +85,42 @@ function AusgabeRow({ ausgabe, projectId }: { ausgabe: Tables<"ausgaben">; proje
     router.refresh();
   }
 
-  async function handleDelete() {
+  async function loeschen() {
     if (!confirm(`"${ausgabe.bezeichnung}" wirklich löschen?`)) return;
     setPending(true);
     await deleteAusgabe(ausgabe.id, projectId);
     setPending(false);
     router.refresh();
   }
+
+  return { pending, toggleBezahlt, setDatum, loeschen };
+}
+
+function BezahltAmFeld({
+  ausgabe,
+  pending,
+  setDatum,
+}: {
+  ausgabe: Tables<"ausgaben">;
+  pending: boolean;
+  setDatum: (datum: string) => void;
+}) {
+  if (!ausgabe.bezahlt) return null;
+  // Das Zahldatum bestimmt das Jahr — korrigierbar, falls spaeter abgehakt.
+  return (
+    <input
+      type="date"
+      aria-label="Bezahlt am"
+      defaultValue={ausgabe.bezahlt_am ?? ""}
+      onChange={(e) => setDatum(e.target.value)}
+      disabled={pending}
+      className="mt-1.5 block rounded-lg border border-line bg-surface px-2 py-1 text-xs text-ink-soft outline-none transition-colors focus:border-terracotta"
+    />
+  );
+}
+
+function AusgabeZeile({ ausgabe, projectId }: { ausgabe: Tables<"ausgaben">; projectId: string }) {
+  const { pending, toggleBezahlt, setDatum, loeschen } = useAusgabeAktionen(ausgabe, projectId);
 
   return (
     <tr className="border-b border-line last:border-0">
@@ -93,26 +132,16 @@ function AusgabeRow({ ausgabe, projectId }: { ausgabe: Tables<"ausgaben">; proje
       <td className="px-5 py-3.5 text-ink-soft">{formatDate(ausgabe.faellig_am)}</td>
       <td className="px-5 py-3.5 text-right font-semibold text-ink">{formatCurrency(ausgabe.betrag)}</td>
       <td className="px-5 py-3.5">
-        <button onClick={handleToggle} disabled={pending}>
+        <button onClick={toggleBezahlt} disabled={pending}>
           <Badge tone={ausgabe.bezahlt ? "success" : "warning"} className="cursor-pointer">
             {ausgabe.bezahlt ? "Bezahlt" : "Offen"}
           </Badge>
         </button>
-        {ausgabe.bezahlt && (
-          // Das Zahldatum bestimmt das Jahr — korrigierbar, falls spaeter abgehakt.
-          <input
-            type="date"
-            aria-label="Bezahlt am"
-            defaultValue={ausgabe.bezahlt_am ?? ""}
-            onChange={(e) => handleDatum(e.target.value)}
-            disabled={pending}
-            className="mt-1.5 block rounded-lg border border-line bg-surface px-2 py-1 text-xs text-ink-soft outline-none transition-colors focus:border-terracotta"
-          />
-        )}
+        <BezahltAmFeld ausgabe={ausgabe} pending={pending} setDatum={setDatum} />
       </td>
       <td className="px-5 py-3.5 text-right">
         <button
-          onClick={handleDelete}
+          onClick={loeschen}
           disabled={pending}
           className="text-ink-soft transition-colors hover:text-danger"
           title="Löschen"
@@ -121,6 +150,48 @@ function AusgabeRow({ ausgabe, projectId }: { ausgabe: Tables<"ausgaben">; proje
         </button>
       </td>
     </tr>
+  );
+}
+
+function AusgabeKarte({ ausgabe, projectId }: { ausgabe: Tables<"ausgaben">; projectId: string }) {
+  const { pending, toggleBezahlt, setDatum, loeschen } = useAusgabeAktionen(ausgabe, projectId);
+
+  return (
+    <div className="rounded-2xl border border-line bg-surface shadow-card p-4">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="truncate font-semibold text-ink">{ausgabe.bezeichnung}</p>
+          <p className="text-xs text-ink-soft">
+            {ausgabeArtLabel[ausgabe.art]} · {ausgabeKategorieLabel[ausgabe.kategorie]}
+          </p>
+        </div>
+        <button
+          onClick={loeschen}
+          disabled={pending}
+          className="shrink-0 text-ink-soft transition-colors hover:text-danger"
+          title="Löschen"
+        >
+          <Trash2 className="h-4 w-4" />
+        </button>
+      </div>
+
+      <div className="mt-3 flex items-end justify-between gap-3">
+        <div>
+          <p className="font-display text-lg font-bold text-ink">{formatCurrency(ausgabe.betrag)}</p>
+          {ausgabe.faellig_am && (
+            <p className="text-xs text-ink-soft">Fällig {formatDate(ausgabe.faellig_am)}</p>
+          )}
+        </div>
+        <div className="text-right">
+          <button onClick={toggleBezahlt} disabled={pending}>
+            <Badge tone={ausgabe.bezahlt ? "success" : "warning"} className="cursor-pointer">
+              {ausgabe.bezahlt ? "Bezahlt" : "Offen"}
+            </Badge>
+          </button>
+          <BezahltAmFeld ausgabe={ausgabe} pending={pending} setDatum={setDatum} />
+        </div>
+      </div>
+    </div>
   );
 }
 

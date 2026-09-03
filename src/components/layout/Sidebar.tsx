@@ -2,16 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutGrid, Building2, FolderKanban, Settings, LogOut, ShieldCheck } from "lucide-react";
+import { LogOut, ShieldCheck } from "lucide-react";
 import { signOut } from "@/app/login/actions";
 import { ThemeToggle } from "./ThemeToggle";
-
-const NAV_ITEMS = [
-  { href: "/uebersicht", label: "Übersicht", icon: LayoutGrid },
-  { href: "/immobilien", label: "Immobilien", icon: Building2 },
-  { href: "/projekte", label: "Projekte", icon: FolderKanban },
-  { href: "/einstellungen", label: "Einstellungen", icon: Settings },
-];
+import { NAV_ITEMS } from "./navItems";
 
 export function Sidebar({ email }: { email: string }) {
   const pathname = usePathname();
@@ -19,7 +13,7 @@ export function Sidebar({ email }: { email: string }) {
   return (
     <aside
       data-drucken="aus"
-      className="flex h-screen w-64 shrink-0 flex-col bg-navy px-4 py-6 text-white"
+      className="hidden h-screen w-64 shrink-0 flex-col bg-navy px-4 py-6 text-white lg:flex"
     >
       <div className="flex items-center gap-3 px-2">
         <span className="flex h-10 w-10 items-center justify-center rounded-full bg-terracotta font-display text-lg font-extrabold">
