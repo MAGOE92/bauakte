@@ -11,7 +11,12 @@ import { Field, Input, Select } from "@/components/ui/Field";
 import { formatCurrency, formatDate } from "@/lib/format";
 import { ausgabeKategorieLabel, ausgabeArtLabel } from "@/lib/labels";
 import type { Enums, Tables } from "@/lib/supabase/database.types";
-import { createAusgabe, toggleAusgabeBezahlt, deleteAusgabe } from "../actions/ausgaben";
+import {
+  createAusgabe,
+  toggleAusgabeBezahlt,
+  setzeBezahltAm,
+  deleteAusgabe,
+} from "../actions/ausgaben";
 
 export function AusgabenSection({
   projectId,
@@ -62,6 +67,14 @@ function AusgabeRow({ ausgabe, projectId }: { ausgabe: Tables<"ausgaben">; proje
     router.refresh();
   }
 
+  async function handleDatum(datum: string) {
+    if (!datum) return;
+    setPending(true);
+    await setzeBezahltAm(ausgabe.id, projectId, datum);
+    setPending(false);
+    router.refresh();
+  }
+
   async function handleDelete() {
     if (!confirm(`"${ausgabe.bezeichnung}" wirklich löschen?`)) return;
     setPending(true);
@@ -85,6 +98,17 @@ function AusgabeRow({ ausgabe, projectId }: { ausgabe: Tables<"ausgaben">; proje
             {ausgabe.bezahlt ? "Bezahlt" : "Offen"}
           </Badge>
         </button>
+        {ausgabe.bezahlt && (
+          // Das Zahldatum bestimmt das Jahr — korrigierbar, falls spaeter abgehakt.
+          <input
+            type="date"
+            aria-label="Bezahlt am"
+            defaultValue={ausgabe.bezahlt_am ?? ""}
+            onChange={(e) => handleDatum(e.target.value)}
+            disabled={pending}
+            className="mt-1.5 block rounded-lg border border-line bg-surface px-2 py-1 text-xs text-ink-soft outline-none transition-colors focus:border-terracotta"
+          />
+        )}
       </td>
       <td className="px-5 py-3.5 text-right">
         <button

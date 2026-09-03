@@ -65,11 +65,38 @@ export async function toggleAusgabeBezahlt(
     .from("ausgaben")
     .update({
       bezahlt,
+      // Heute ist nur der Vorschlag — korrigieren laesst er sich danach.
       bezahlt_am: bezahlt ? new Date().toISOString().slice(0, 10) : null,
     })
     .eq("id", ausgabeId);
 
   if (error) return { status: "error", message: "Konnte nicht aktualisiert werden." };
+
+  revalidatePath(`/projekte/${projectId}`);
+  return { status: "ok" };
+}
+
+/**
+ * Das Zahldatum entscheidet, in welchem Jahr die Ausgabe zaehlt — im Cashflow
+ * wie beim Finanzamt. Wer eine Rechnung erst spaeter abhakt, muss es deshalb
+ * nachtragen koennen.
+ */
+export async function setzeBezahltAm(
+  ausgabeId: string,
+  projectId: string,
+  bezahltAm: string
+): Promise<{ status: "ok" } | { status: "error"; message: string }> {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(bezahltAm)) {
+    return { status: "error", message: "Bitte ein gültiges Datum angeben." };
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("ausgaben")
+    .update({ bezahlt: true, bezahlt_am: bezahltAm })
+    .eq("id", ausgabeId);
+
+  if (error) return { status: "error", message: "Konnte nicht gespeichert werden." };
 
   revalidatePath(`/projekte/${projectId}`);
   return { status: "ok" };
